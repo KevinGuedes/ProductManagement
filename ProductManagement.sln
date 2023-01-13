@@ -3,27 +3,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{DA82D8CF-9820-4AE1-A336-458F92898C0E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0 - Presentation", "0 - Presentation", "{DA82D8CF-9820-4AE1-A336-458F92898C0E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{2AA7AE94-B2DF-4C4D-91BE-CD09E07F241F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Domain", "2 - Domain", "{2AA7AE94-B2DF-4C4D-91BE-CD09E07F241F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infra", "Infra", "{03426190-A6DF-43C0-A46A-2EBD090F8475}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Infra", "3 - Infra", "{03426190-A6DF-43C0-A46A-2EBD090F8475}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence", "{D0209AEC-74EE-4979-8BF1-9768797D020D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IoC", "IoC", "{327ED846-7BB4-415E-83FF-99AF7BAE0F8D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{E7133565-20EC-4F0B-99F0-3726B6F3E47A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - Application", "1 - Application", "{E7133565-20EC-4F0B-99F0-3726B6F3E47A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductManagement.Api", "ProductManagement.Api\ProductManagement.Api.csproj", "{8588FA86-0757-4EA4-A839-E46D95C8ABA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductManagement.Api", "ProductManagement.Api\ProductManagement.Api.csproj", "{8588FA86-0757-4EA4-A839-E46D95C8ABA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductManagement.Infra.IoC", "ProductManagement.Infra.IoC\ProductManagement.Infra.IoC.csproj", "{DED72116-8EF1-4253-B6FB-FCF482D01EC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductManagement.Infra.IoC", "ProductManagement.Infra.IoC\ProductManagement.Infra.IoC.csproj", "{DED72116-8EF1-4253-B6FB-FCF482D01EC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductManagement.Infra.Persistence", "ProductManagement.Infra.Persistence\ProductManagement.Infra.Persistence.csproj", "{20B2EB57-63D4-4706-B2E3-9F84924F4922}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductManagement.Infra.Persistence", "ProductManagement.Infra.Persistence\ProductManagement.Infra.Persistence.csproj", "{20B2EB57-63D4-4706-B2E3-9F84924F4922}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductManagement.Domain", "ProductManagement.Domain\ProductManagement.Domain.csproj", "{4AB14B10-2673-438A-8200-9304057243AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductManagement.Domain", "ProductManagement.Domain\ProductManagement.Domain.csproj", "{4AB14B10-2673-438A-8200-9304057243AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductManagement.Application", "ProductManagement.Application\ProductManagement.Application.csproj", "{D01BE13B-7486-4F61-AB55-4C7A47BB3696}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductManagement.Application", "ProductManagement.Application\ProductManagement.Application.csproj", "{D01BE13B-7486-4F61-AB55-4C7A47BB3696}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

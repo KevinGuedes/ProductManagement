@@ -6,7 +6,8 @@ namespace ProductManagement.Application.Profiles
 {
     public class DtoToCommandProfile : Profile
     {
-        public DtoToCommandProfile() { 
+        public DtoToCommandProfile()
+        {
             CreateMap<ProductDto, CreateProductCommand>();
         }
     }

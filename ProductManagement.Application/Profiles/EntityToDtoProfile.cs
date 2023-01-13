@@ -6,7 +6,8 @@ namespace ProductManagement.Application.Profiles
 {
     public class EntityToDtoProfile : Profile
     {
-        public EntityToDtoProfile() {
+        public EntityToDtoProfile()
+        {
             CreateMap<Product, ProductDto>();
         }
     }

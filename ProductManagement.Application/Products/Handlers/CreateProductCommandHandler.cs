@@ -3,10 +3,6 @@ using Microsoft.Extensions.Logging;
 using ProductManagement.Application.Products.Commands;
 using ProductManagement.Domain.Entities;
 using ProductManagement.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using ProductManagement.Infra.IoC;
 
 namespace ProductManagement.Api
 {
@@ -18,7 +19,7 @@ namespace ProductManagement.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.InjectDependencies(Configuration);
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

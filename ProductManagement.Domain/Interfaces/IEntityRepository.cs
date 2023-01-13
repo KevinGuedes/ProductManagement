@@ -8,7 +8,7 @@ namespace ProductManagement.Domain.Interfaces
     public interface IEntityRepository<TEntity> where TEntity : Entity
     {
         Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken);
-        Task<TEntity> Insert(TEntity entity, CancellationToken cancellationToken);
-        Task<TEntity> Update(TEntity entity, CancellationToken cancellationToken);
+        void Insert(TEntity entity);
+        void Update(TEntity entity);
     }
 }

@@ -5,6 +5,7 @@ using ProductManagement.Application.Products.Service;
 using ProductManagement.Domain.Interfaces;
 using ProductManagement.Infra.Persistence.Context;
 using ProductManagement.Infra.Persistence.Repositories;
+using ProductManagement.Infra.Persistence.UnitOfWork;
 using System.Reflection;
 
 namespace ProductManagement.Infra.IoC
@@ -34,7 +35,9 @@ namespace ProductManagement.Infra.IoC
                  options => options.UseSqlServer(configuration.GetConnectionString("ProductManagementDb"),
                  m => m.MigrationsAssembly(typeof(ProductManagementContext).Assembly.FullName)));
 
-            services.AddScoped<IProductRepository, ProductRepository>();
+            services
+                .AddScoped<IUnitOfWork, UnitOfWork>()
+                .AddScoped<IProductRepository, ProductRepository>();
         }
 
         private static void RegisterMappers(IServiceCollection services, Assembly applicationLayerAssembly)

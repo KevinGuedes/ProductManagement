@@ -13,11 +13,13 @@ namespace ProductManagement.Application.Products.Service
     {
         private readonly IMapper _mapper;
         private readonly IProductRepository _productRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ProductService(IMapper mapper, IProductRepository productRepository)
+        public ProductService(IMapper mapper, IProductRepository productRepository, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
             _productRepository = productRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IEnumerable<ProductDto>> GetAllAsync(CancellationToken cancellationToken)
@@ -45,6 +47,7 @@ namespace ProductManagement.Application.Products.Service
                 productDto.SupplierCNPJ);
 
             await _productRepository.AddAsync(createdProduct, cancellationToken);
+            await _unitOfWork.CommitChangesAsync(cancellationToken);
             return _mapper.Map<ProductDto>(createdProduct);
         }
 
@@ -53,11 +56,12 @@ namespace ProductManagement.Application.Products.Service
             var product = await _productRepository.GetProductByCodeAsync(code, cancellationToken);
             product.UpdateStatus(ProductStatus.Inactive);
             _productRepository.Update(product);
+            await _unitOfWork.CommitChangesAsync(cancellationToken);
         }
 
         public async Task<ProductDto> UpdateProductAsync(ProductDto productDto, CancellationToken cancellationToken)
         {
-            var product = await _productRepository.GetProductByIdAsync(productDto.Id, cancellationToken);
+            var product = await _productRepository.GetByIdAsync(productDto.Id, cancellationToken);
             product.Update(
                 productDto.Code,
                 productDto.Description,
@@ -69,6 +73,7 @@ namespace ProductManagement.Application.Products.Service
                 productDto.SupplierCNPJ);
 
             _productRepository.Update(product);
+            await _unitOfWork.CommitChangesAsync(cancellationToken);
             return _mapper.Map<ProductDto>(product);
         }
     }

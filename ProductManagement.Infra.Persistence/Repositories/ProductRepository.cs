@@ -9,17 +9,12 @@ using System.Threading.Tasks;
 namespace ProductManagement.Infra.Persistence.Repositories
 {
 
-    public class ProductRepository : IProductRepository
+    public class ProductRepository : EntityRepository, IProductRepository
     {
-        public readonly ProductManagementContext _productManagementContext;
-
         public ProductRepository(ProductManagementContext productManagementContext)
-        {
-            _productManagementContext = productManagementContext;
-        }
+            : base(productManagementContext) { }
 
-
-        public async Task<Product> GetProductByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<Product> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             return await _productManagementContext.Products.FindAsync(id, cancellationToken);
         }
@@ -42,14 +37,12 @@ namespace ProductManagement.Infra.Persistence.Repositories
         public async Task<Product> AddAsync(Product product, CancellationToken cancellationToken)
         {
             await _productManagementContext.Products.AddAsync(product, cancellationToken);
-            await _productManagementContext.SaveChangesAsync(cancellationToken);
             return product;
         }
 
         public void Update(Product product)
         {
             _productManagementContext.Products.Update(product);
-            _productManagementContext.SaveChanges();
         }
     }
 }

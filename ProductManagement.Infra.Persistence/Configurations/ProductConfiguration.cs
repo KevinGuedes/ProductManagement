@@ -11,6 +11,7 @@ namespace ProductManagement.Infra.Persistence.Configurations
             builder.HasKey(product => product.Id);
             builder.HasIndex(product => product.Code);
 
+            builder.Property(p => p.Id).IsRequired().ValueGeneratedOnAdd();
             builder.Property(product => product.Code).IsRequired();
             builder.Property(product => product.Description).IsRequired();
         }

@@ -7,7 +7,7 @@ namespace ProductManagement.Domain.Interfaces
 {
     public interface IEntityRepository<TEntity> where TEntity : Entity
     {
-        Task<TEntity> GetProductByIdAsync(int id, CancellationToken cancellationToken);
+        Task<TEntity> GetByIdAsync(int id, CancellationToken cancellationToken);
         Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken);
         Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken);
         void Update(TEntity entity);

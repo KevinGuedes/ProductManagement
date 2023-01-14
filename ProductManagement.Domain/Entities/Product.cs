@@ -1,8 +1,5 @@
 ﻿using ProductManagement.Domain.Enums;
 using System;
-using static System.Net.Mime.MediaTypeNames;
-using System.Diagnostics;
-using System.Xml.Linq;
 
 namespace ProductManagement.Domain.Entities
 {

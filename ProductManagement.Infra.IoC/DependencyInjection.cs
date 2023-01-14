@@ -26,6 +26,7 @@ namespace ProductManagement.Infra.IoC
 
         private static void AddFluentValidation(IServiceCollection services, Assembly applicationLayerAssembly)
         {
+            ValidatorOptions.Global.LanguageManager.Enabled = false;
             services
                 .AddValidatorsFromAssembly(applicationLayerAssembly)
                 .AddFluentValidationAutoValidation();

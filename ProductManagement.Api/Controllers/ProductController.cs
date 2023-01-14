@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using ProductManagement.Application.DTOs;
 using ProductManagement.Application.Products.Service;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,33 +23,46 @@ namespace ProductManagement.Api.Controllers
 
         [HttpGet]
         [EnableQuery(PageSize = 10)]
-        public async Task<IEnumerable<ProductDto>> GetProducts(CancellationToken cancellationToken)
+        [SwaggerOperation(Summary = "Lists all product according to query parameters")]
+        [SwaggerResponse(StatusCodes.Status200OK, "List of all products fetched according to query", typeof(IEnumerable<ProductDto>))]
+        public async Task<IActionResult> GetProducts(CancellationToken cancellationToken)
         {
-            return await _productService.GetAllAsync(cancellationToken);
+            return Ok(await _productService.GetAllAsync(cancellationToken));
         }
 
         [HttpGet("{code:int}")]
-        public async Task<ProductDto> GetProductByCode(int code, CancellationToken cancellationToken)
+        [SwaggerOperation(Summary = "Get a product by its code")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Fetched product", typeof(ProductDto))]
+        public async Task<IActionResult> GetProductByCode(int code, CancellationToken cancellationToken)
         {
-            return await _productService.GetProductByCodeAsync(code, cancellationToken);
+            return Ok(await _productService.GetProductByCodeAsync(code, cancellationToken));
         }
 
         [HttpPost]
-        public async Task<ProductDto> CreateProduct(ProductDto product, CancellationToken cancellationToken)
+        [SwaggerOperation(Summary = "Create a new product")]
+        [SwaggerResponse(StatusCodes.Status201Created, "Created product", typeof(ProductDto))]
+        public async Task<IActionResult> CreateProduct(ProductDto productDto, CancellationToken cancellationToken)
         {
-            return await _productService.CreateProductAsync(product, cancellationToken);
+            var createdProduct = await _productService.CreateProductAsync(productDto, cancellationToken);
+            return StatusCode(StatusCodes.Status201Created, createdProduct);
         }
 
         [HttpPut]
-        public async Task<IEnumerable<ProductDto>> UpdateProduct()
+        [SwaggerOperation(Summary = "Update an existing product")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Updated product", typeof(ProductDto))]
+        public async Task<IActionResult> UpdateProduct(ProductDto productDto, CancellationToken cancellationToken)
         {
-            throw new System.NotSupportedException();
+            var updatedProduct = await _productService.UpdateProductAsync(productDto, cancellationToken);
+            return Ok(updatedProduct);
         }
 
-        [HttpDelete]
-        public async Task DeleteProduct()
+        [HttpDelete("{code:int}")]
+        [SwaggerOperation(Summary = "Delete a product by its code")]
+        [SwaggerResponse(StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteProduct(int code, CancellationToken cancellationToken)
         {
-            throw new System.NotSupportedException();
+            await _productService.DeleteProductByCodeAsync(code, cancellationToken);
+            return Ok();
         }
     }
 }

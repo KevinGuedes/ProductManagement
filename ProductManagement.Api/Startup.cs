@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+using Microsoft.OData.ModelBuilder;
 using MyFinance.Presentation.Configurations;
+using ProductManagement.Application.DTOs;
 using ProductManagement.Infra.IoC;
 
 namespace ProductManagement.Api
@@ -22,11 +24,10 @@ namespace ProductManagement.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCustomSwaggerConfiguration();
-            services.InjectDependencies(Configuration);
-
+            services.AddDependencies(Configuration);
             services
                 .AddControllers()
-                .AddOData(options => options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(30));
+                .AddOData(options => options.Count().Filter().Expand().Select().OrderBy().SetMaxTop(5));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

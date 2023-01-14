@@ -41,6 +41,7 @@ namespace ProductManagement.Api.Controllers
         [HttpPost]
         [SwaggerOperation(Summary = "Create a new product")]
         [SwaggerResponse(StatusCodes.Status201Created, "Created product", typeof(ProductDto))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Bad product parameters", typeof(ValidationProblemDetails))]
         public async Task<IActionResult> CreateProduct(ProductDto productDto, CancellationToken cancellationToken)
         {
             var createdProduct = await _productService.CreateProductAsync(productDto, cancellationToken);
@@ -50,6 +51,7 @@ namespace ProductManagement.Api.Controllers
         [HttpPut]
         [SwaggerOperation(Summary = "Update an existing product")]
         [SwaggerResponse(StatusCodes.Status200OK, "Updated product", typeof(ProductDto))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Bad product parameters", typeof(ValidationProblemDetails))]
         public async Task<IActionResult> UpdateProduct(ProductDto productDto, CancellationToken cancellationToken)
         {
             var updatedProduct = await _productService.UpdateProductAsync(productDto, cancellationToken);
@@ -58,11 +60,11 @@ namespace ProductManagement.Api.Controllers
 
         [HttpDelete("{code:int}")]
         [SwaggerOperation(Summary = "Delete a product by its code")]
-        [SwaggerResponse(StatusCodes.Status200OK)]
+        [SwaggerResponse(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteProduct(int code, CancellationToken cancellationToken)
         {
             await _productService.DeleteProductByCodeAsync(code, cancellationToken);
-            return Ok();
+            return NoContent();
         }
     }
 }

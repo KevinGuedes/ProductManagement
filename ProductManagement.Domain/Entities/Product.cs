@@ -1,5 +1,8 @@
 ﻿using ProductManagement.Domain.Enums;
 using System;
+using static System.Net.Mime.MediaTypeNames;
+using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace ProductManagement.Domain.Entities
 {
@@ -40,6 +43,26 @@ namespace ProductManagement.Domain.Entities
         {
             Status = status;
             SetUpdateDate();
+        }
+
+        public void Update(
+             int code,
+            string description,
+            ProductStatus status,
+            DateTime manufacturingDate,
+            DateTime expirationDate,
+            int supplierCode,
+            string supplierDescription,
+            string supplierCNPJ)
+        {
+            Code = code;
+            Description = description;
+            Status = status;
+            ManufacturingDate = manufacturingDate;
+            ExpirationDate = expirationDate;
+            SupplierCode = supplierCode;
+            SupplierDescription = supplierDescription;
+            SupplierCNPJ = supplierCNPJ;
         }
     }
 }

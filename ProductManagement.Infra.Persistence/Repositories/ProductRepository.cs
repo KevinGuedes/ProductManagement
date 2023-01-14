@@ -18,6 +18,12 @@ namespace ProductManagement.Infra.Persistence.Repositories
             _productManagementContext = productManagementContext;
         }
 
+
+        public async Task<Product> GetProductByIdAsync(int id, CancellationToken cancellationToken)
+        {
+            return await _productManagementContext.Products.FindAsync(id, cancellationToken);
+        }
+
         public async Task<IEnumerable<Product>> GetAllAsync(CancellationToken cancellationToken)
         {
             return await _productManagementContext.Products.ToListAsync(cancellationToken);
@@ -33,10 +39,11 @@ namespace ProductManagement.Infra.Persistence.Repositories
             return product;
         }
 
-        public void Insert(Product product)
+        public async Task<Product> AddAsync(Product product, CancellationToken cancellationToken)
         {
-            _productManagementContext.Products.Add(product);
-            _productManagementContext.SaveChanges();
+            await _productManagementContext.Products.AddAsync(product, cancellationToken);
+            await _productManagementContext.SaveChangesAsync(cancellationToken);
+            return product;
         }
 
         public void Update(Product product)

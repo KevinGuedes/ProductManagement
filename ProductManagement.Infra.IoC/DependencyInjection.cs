@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ProductManagement.Application.Products.Service;
+using ProductManagement.Application.Validators;
 using ProductManagement.Domain.Interfaces;
 using ProductManagement.Infra.Persistence.Context;
 using ProductManagement.Infra.Persistence.Repositories;
@@ -12,21 +15,28 @@ namespace ProductManagement.Infra.IoC
 {
     public static class DependencyInjection
     {
-        public static void InjectDependencies(this IServiceCollection services, IConfiguration configuration)
+        public static void AddDependencies(this IServiceCollection services, IConfiguration configuration)
         {
             var applicationLayerAssembly = Assembly.Load("ProductManagement.Application");
-
-            RegisterMappers(services, applicationLayerAssembly);
-            RegisterData(services, configuration);
-            RegisterServices(services);
+            AddFluentValidation(services, applicationLayerAssembly);
+            AddMappers(services, applicationLayerAssembly);
+            AddData(services, configuration);
+            AddServices(services);
         }
 
-        private static void RegisterServices(IServiceCollection services)
+        private static void AddFluentValidation(IServiceCollection services, Assembly applicationLayerAssembly)
+        {
+            services
+                .AddValidatorsFromAssembly(applicationLayerAssembly)
+                .AddFluentValidationAutoValidation();
+        }
+
+        private static void AddServices(IServiceCollection services)
         {
             services.AddScoped<IProductService, ProductService>();
         }
 
-        private static void RegisterData(IServiceCollection services, IConfiguration configuration)
+        private static void AddData(IServiceCollection services, IConfiguration configuration)
         {
             //services.AddDbContext<ProductManagementContext>(options =>
             //    options.UseInMemoryDatabase("ProductManagement"));
@@ -40,7 +50,7 @@ namespace ProductManagement.Infra.IoC
                 .AddScoped<IProductRepository, ProductRepository>();
         }
 
-        private static void RegisterMappers(IServiceCollection services, Assembly applicationLayerAssembly)
+        private static void AddMappers(IServiceCollection services, Assembly applicationLayerAssembly)
         {
             services.AddAutoMapper(applicationLayerAssembly);
         }

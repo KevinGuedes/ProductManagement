@@ -39,6 +39,7 @@ namespace ProductManagement.Domain.Entities
         public void UpdateStatus(ProductStatus status)
         {
             Status = status;
+            SetUpdateDate();
         }
     }
 }

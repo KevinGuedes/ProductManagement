@@ -9,6 +9,8 @@ namespace ProductManagement.Application.Products.Service
     {
         Task<IEnumerable<ProductDto>> GetAllAsync(CancellationToken cancellationToken);
         Task<ProductDto> GetProductByCodeAsync(int code, CancellationToken cancellationToken);
-        Task<ProductDto> CreateProductAsync(ProductDto product, CancellationToken cancellationToken);
+        Task DeleteProductByCodeAsync(int code, CancellationToken cancellationToken);
+        Task<ProductDto> CreateProductAsync(ProductDto productDto, CancellationToken cancellationToken);
+        Task<ProductDto> UpdateProductAsync(ProductDto productDto, CancellationToken cancellationToken);
     }
 }

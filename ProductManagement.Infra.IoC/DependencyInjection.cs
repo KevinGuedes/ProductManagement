@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ProductManagement.Application.Products.Service;
@@ -16,7 +15,6 @@ namespace ProductManagement.Infra.IoC
         {
             var applicationLayerAssembly = Assembly.Load("ProductManagement.Application");
 
-            RegisterMediatR(services, applicationLayerAssembly);
             RegisterMappers(services, applicationLayerAssembly);
             RegisterData(services, configuration);
             RegisterServices(services);
@@ -42,11 +40,6 @@ namespace ProductManagement.Infra.IoC
         private static void RegisterMappers(IServiceCollection services, Assembly applicationLayerAssembly)
         {
             services.AddAutoMapper(applicationLayerAssembly);
-        }
-
-        private static void RegisterMediatR(IServiceCollection services, Assembly applicationLayerAssembly)
-        {
-            services.AddMediatR(applicationLayerAssembly);
         }
     }
 }

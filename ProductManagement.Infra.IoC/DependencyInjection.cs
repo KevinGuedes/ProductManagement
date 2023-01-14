@@ -18,7 +18,7 @@ namespace ProductManagement.Infra.IoC
 
             RegisterMediatR(services, applicationLayerAssembly);
             RegisterMappers(services, applicationLayerAssembly);
-            RegisterData(services);
+            RegisterData(services, configuration);
             RegisterServices(services);
         }
 
@@ -27,10 +27,14 @@ namespace ProductManagement.Infra.IoC
             services.AddScoped<IProductService, ProductService>();
         }
 
-        private static void RegisterData(IServiceCollection services)
+        private static void RegisterData(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<ProductManagementContext>(options =>
-                options.UseInMemoryDatabase("ProductManagement"));
+            //services.AddDbContext<ProductManagementContext>(options =>
+            //    options.UseInMemoryDatabase("ProductManagement"));
+            services
+             .AddDbContext<ProductManagementContext>(
+                 options => options.UseSqlServer(configuration.GetConnectionString("ProductManagementDb"),
+                 m => m.MigrationsAssembly(typeof(ProductManagementContext).Assembly.FullName)));
 
             services.AddScoped<IProductRepository, ProductRepository>();
         }

@@ -16,7 +16,7 @@ namespace ProductManagement.Infra.Persistence.UnitOfWork
 
         public async Task CommitChangesAsync(CancellationToken cancellationToken)
         {
-            await _productManagementContext.SaveChangesAsync();
+            await _productManagementContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

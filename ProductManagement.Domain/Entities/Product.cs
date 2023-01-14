@@ -60,6 +60,7 @@ namespace ProductManagement.Domain.Entities
             SupplierCode = supplierCode;
             SupplierDescription = supplierDescription;
             SupplierCNPJ = supplierCNPJ;
+            SetUpdateDate();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 using ProductManagement.Application.DTOs;
 using ProductManagement.Application.Products.Service;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace ProductManagement.Api.Controllers
         }
 
         [HttpGet]
+        [EnableQuery(PageSize = 10)]
         public async Task<IEnumerable<ProductDto>> GetProducts(CancellationToken cancellationToken)
         {
             return await _productService.GetAllAsync(cancellationToken);

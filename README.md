@@ -30,6 +30,7 @@ A simple api for product management
 - OData Protocol
 - Open Api Documentation
 - Unit Tests
+- Docker
 
 ### Packages
 

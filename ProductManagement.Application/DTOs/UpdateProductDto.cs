@@ -16,14 +16,14 @@ namespace ProductManagement.Application.DTOs
         public string SupplierCnpj { get; set; }
 
         public UpdateProductDto(
-            int id, 
+            int id,
             int code,
-            string description, 
-            ProductStatus status, 
-            DateTime manufacturingDate, 
+            string description,
+            ProductStatus status,
+            DateTime manufacturingDate,
             DateTime expirationDate,
-            int supplierCode, 
-            string supplierDescription, 
+            int supplierCode,
+            string supplierDescription,
             string supplierCnpj)
         {
             Id = id;

@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using ProductManagement.Application.DTOs;
-using ProductManagement.Domain.Interfaces;
 
 namespace ProductManagement.Application.Validators
 {

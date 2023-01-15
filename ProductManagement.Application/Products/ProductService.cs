@@ -34,7 +34,7 @@ namespace ProductManagement.Application.Products
         {
             var product = await _productRepository.GetProductByCodeAsync(code, cancellationToken);
 
-            if (product is null) 
+            if (product is null)
                 return Result.Fail(new Error("Product not found").WithMetadata("Product Code", code));
 
             return _mapper.Map<ProductDto>(product);

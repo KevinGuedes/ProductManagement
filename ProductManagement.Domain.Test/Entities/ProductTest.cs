@@ -1,6 +1,4 @@
-using Bogus;
 using Bogus.Extensions.Brazil;
-using ProductManagement.Domain.Entities;
 using ProductManagement.Domain.Enums;
 using ProductManagement.TestUtils;
 

@@ -15,12 +15,12 @@ namespace ProductManagement.Application.DTOs
         public string SupplierCnpj { get; set; }
 
         public CreateProductDto(
-            int code, 
+            int code,
             string description,
-            ProductStatus status, 
-            DateTime manufacturingDate, 
-            DateTime expirationDate, 
-            int supplierCode, 
+            ProductStatus status,
+            DateTime manufacturingDate,
+            DateTime expirationDate,
+            int supplierCode,
             string supplierDescription,
             string supplierCnpj)
         {

@@ -210,7 +210,7 @@ namespace ProductManagement.Application.Test.Services
 
             await _sut.UpdateProductAsync(updateProductDto, default);
 
-            _productRepository.Verify(productRepository => productRepository.Update(It.Is<Product>(p => 
+            _productRepository.Verify(productRepository => productRepository.Update(It.Is<Product>(p =>
                 p.Code == updateProductDto.Code &&
                 p.Description == updateProductDto.Description &&
                 p.Status == updateProductDto.Status &&
@@ -245,7 +245,7 @@ namespace ProductManagement.Application.Test.Services
 
             var result = await _sut.UpdateProductAsync(updateProductDto, default);
 
-            result.IsSuccess.Should().BeTrue(); 
+            result.IsSuccess.Should().BeTrue();
         }
 
         [Fact]

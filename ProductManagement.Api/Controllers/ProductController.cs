@@ -1,12 +1,10 @@
 ﻿using FluentResults;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using ProductManagement.Application.DTOs;
 using ProductManagement.Application.Products.Service;
-using ProductManagement.Application.Validators;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System.Threading;
@@ -59,7 +57,7 @@ namespace ProductManagement.Api.Controllers
         {
             var result = await _productService.CreateProductAsync(createProductDto, cancellationToken);
 
-            if(result.IsSuccess) 
+            if (result.IsSuccess)
                 return StatusCode(StatusCodes.Status201Created, result.Value);
 
             return UnprocessableEntity(result.Reasons);

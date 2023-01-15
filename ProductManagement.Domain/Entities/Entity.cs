@@ -8,7 +8,7 @@ namespace ProductManagement.Domain.Entities
         public DateTime CreationDate { get; private set; }
         public DateTime? UpdateDate { get; private set; }
 
-        private protected Entity() 
+        private protected Entity()
         {
             CreationDate = DateTime.Now;
         }

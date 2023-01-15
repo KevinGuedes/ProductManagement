@@ -9,7 +9,7 @@ namespace ProductManagement.Application.Test.Validators
 
         public UpdateProductDtoValidatorTest()
         {
-            _faker= new Faker();
+            _faker = new Faker();
             _sut = new UpdateProductDtoValidator();
         }
 

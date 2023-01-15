@@ -17,7 +17,7 @@ namespace ProductManagement.Application.Test.Validators
         public async Task ShouldHaveValidationErrorWhenManufacturingDateIsHigherThanExpirationDate()
         {
             var invalidCreateProductDto = ProductDataFaker.GetFakeCreateProductDto(_faker);
-            invalidCreateProductDto.ManufacturingDate= invalidCreateProductDto.ExpirationDate.AddMinutes(1);
+            invalidCreateProductDto.ManufacturingDate = invalidCreateProductDto.ExpirationDate.AddMinutes(1);
 
             var result = await _sut.TestValidateAsync(invalidCreateProductDto, default);
 

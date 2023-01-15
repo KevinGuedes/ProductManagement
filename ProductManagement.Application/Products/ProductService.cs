@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using FluentResults;
 using ProductManagement.Application.DTOs;
+using ProductManagement.Application.Products.Service;
 using ProductManagement.Domain.Entities;
 using ProductManagement.Domain.Enums;
 using ProductManagement.Domain.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,13 +30,10 @@ namespace ProductManagement.Application.Products
             return _mapper.Map<IEnumerable<ProductDto>>(products);
         }
 
-        public async Task<Result<ProductDto>> GetProductByCodeAsync(int code, CancellationToken cancellationToken)
+        public async Task<ProductDto> GetProductByCodeAsync(int code, CancellationToken cancellationToken)
         {
             var product = await _productRepository.GetProductByCodeAsync(code, cancellationToken);
-            if(product is null)
-                return Result.Fail(new Error("Product not found"));
-
-            return Result.Ok(_mapper.Map<ProductDto>(product));
+            return _mapper.Map<ProductDto>(product);
         }
 
         public async Task<ProductDto> CreateProductAsync(CreateProductDto createProductDto, CancellationToken cancellationToken)

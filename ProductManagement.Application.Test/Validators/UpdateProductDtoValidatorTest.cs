@@ -48,10 +48,10 @@ namespace ProductManagement.Application.Test.Validators
         }
 
         [Fact]
-        public async Task ShouldHaveValidationErrorWhenCodeIsZero()
+        public async Task ShouldHaveValidationErrorWhenCodeIsInvalid()
         {
             var invalidUpdateProductDto = _productDataFaker.GetUpdateProductDto();
-            invalidUpdateProductDto.Code = 0;
+            invalidUpdateProductDto.Code = -1;
 
             var result = await _sut.TestValidateAsync(invalidUpdateProductDto, default);
 

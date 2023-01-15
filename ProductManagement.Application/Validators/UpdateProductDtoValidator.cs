@@ -8,7 +8,7 @@ namespace ProductManagement.Application.Validators
         public UpdateProductDtoValidator()
         {
             RuleFor(updateProductDto => updateProductDto.Code)
-                .GreaterThan(0);
+                .GreaterThanOrEqualTo(0);
 
             RuleFor(updateProductDto => updateProductDto.Description)
                 .NotNull()

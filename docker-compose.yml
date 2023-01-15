@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  productmanagement.api:
+    image: ${DOCKER_REGISTRY-}productmanagementapi
+    build:
+      context: .
+      dockerfile: ProductManagement.Api/Dockerfile
+    depends_on:
+       - sql
+  sql:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    ports: 
+      - "1433:1433" 
+    environment:
+      - ACCEPT_EULA=y
+      - SA_PASSWORD=A&VeryComplex123Password
+    volumes:
+      - ./productmanagementdata:/var/opt/mssql/data

@@ -39,12 +39,13 @@ namespace ProductManagement.Infra.IoC
 
         private static void AddData(IServiceCollection services, IConfiguration configuration)
         {
-            //services.AddDbContext<ProductManagementContext>(options =>
-            //    options.UseInMemoryDatabase("ProductManagement"));
             services
-             .AddDbContext<ProductManagementContext>(
-                 options => options.UseSqlServer(configuration.GetConnectionString("ProductManagementDb"),
-                 m => m.MigrationsAssembly(typeof(ProductManagementContext).Assembly.FullName)));
+                .AddDbContext<ProductManagementContext>(
+                    options => options.UseSqlServer(configuration.GetConnectionString("ProductManagementDb"),
+                    m => m.MigrationsAssembly(typeof(ProductManagementContext).Assembly.FullName)));
+
+            var dbContext = services.BuildServiceProvider().GetService<ProductManagementContext>();
+            dbContext.Database.Migrate();
 
             services
                 .AddScoped<IUnitOfWork, UnitOfWork>()

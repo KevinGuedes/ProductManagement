@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ProductManagement.Application.Products;
@@ -9,6 +11,7 @@ using ProductManagement.Domain.Interfaces;
 using ProductManagement.Infra.Persistence.Context;
 using ProductManagement.Infra.Persistence.Repositories;
 using ProductManagement.Infra.Persistence.UnitOfWork;
+using System;
 using System.Reflection;
 
 namespace ProductManagement.Infra.IoC
@@ -42,7 +45,9 @@ namespace ProductManagement.Infra.IoC
             services
                 .AddDbContext<ProductManagementContext>(
                     options => options.UseSqlServer(configuration.GetConnectionString("ProductManagementDb"),
-                    m => m.MigrationsAssembly(typeof(ProductManagementContext).Assembly.FullName)));
+                    sqlServerOptions => sqlServerOptions
+                        .EnableRetryOnFailure(10, TimeSpan.FromSeconds(5), null)
+                        .MigrationsAssembly(typeof(ProductManagementContext).Assembly.FullName)));
 
             var dbContext = services.BuildServiceProvider().GetService<ProductManagementContext>();
             dbContext.Database.Migrate();

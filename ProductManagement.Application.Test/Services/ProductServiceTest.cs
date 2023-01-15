@@ -96,6 +96,35 @@ namespace ProductManagement.Application.Test.Services
         }
 
         [Fact]
+        public async Task ShouldReturnSuccessWhenProductIsSuccessfullyCreated()
+        {
+            var createProductDto = ProductDataFaker.GetFakeCreateProductDto(_faker);
+            _productRepository
+               .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
+               .Returns(null as Product);
+
+            var result = await _sut.CreateProductAsync(createProductDto, default);
+
+            result.IsSuccess.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ShouldReturnFailureWhenThereIsAProductWithTheSameCode()
+        {
+            var createProductDto = ProductDataFaker.GetFakeCreateProductDto(_faker);
+            var existingProduct = ProductDataFaker.GetFakeProduct(_faker);
+            createProductDto.Code = existingProduct.Code;
+
+            _productRepository
+               .Setup(repository => repository.GetProductByCodeAsync(createProductDto.Code, default).Result)
+               .Returns(existingProduct);
+
+            var result = await _sut.CreateProductAsync(createProductDto, default);
+
+            result.IsSuccess.Should().BeFalse();
+        }
+
+        [Fact]
         public async Task ShouldGetExistingProductFromDatabaseWhenDeletingAProduct()
         {
             var code = 3;

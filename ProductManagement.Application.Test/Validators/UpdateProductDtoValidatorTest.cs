@@ -1,7 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using ProductManagement.Application.DTOs;
-using ProductManagement.Domain.Entities;
-using ProductManagement.Domain.Interfaces;
 
 namespace ProductManagement.Application.Test.Validators
 {
@@ -15,7 +12,6 @@ namespace ProductManagement.Application.Test.Validators
             _faker= new Faker();
             _sut = new UpdateProductDtoValidator();
         }
-
 
         [Fact]
         public async Task ShouldHaveValidationErrorWhenManufacturingDateIsHigherThanExpirationDate()

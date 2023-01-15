@@ -1,12 +1,8 @@
 using AutoMapper;
-using Bogus.Extensions.Brazil;
-using FluentAssertions.Equivalency;
-using ProductManagement.Application.DTOs;
 using ProductManagement.Application.Products;
 using ProductManagement.Domain.Entities;
 using ProductManagement.Domain.Enums;
 using ProductManagement.Domain.Interfaces;
-using ProductManagement.TestUtils;
 
 namespace ProductManagement.Application.Test.Services
 {
@@ -47,6 +43,30 @@ namespace ProductManagement.Application.Test.Services
         }
 
         [Fact]
+        public async Task ShouldReturnFailureWhenTryingToGetByCodeAndProductDoesNotExist()
+        {
+            _productRepository
+             .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
+             .Returns(null as Product);
+
+            var result = await _sut.GetProductByCodeAsync(1, default);
+
+            result.IsSuccess.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessWhenProductIsSuccessfullyRetrievedByCode()
+        {
+            _productRepository
+              .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
+              .Returns(ProductDataFaker.GetFakeProduct(_faker));
+
+            var result = await _sut.GetProductByCodeAsync(1, default);
+
+            result.IsSuccess.Should().BeTrue();
+        }
+
+        [Fact]
         public async Task ShouldCallAddFromRepositoryWhenCreatingANewProduct()
         {
             var createProductDto = ProductDataFaker.GetFakeCreateProductDto(_faker);
@@ -76,7 +96,7 @@ namespace ProductManagement.Application.Test.Services
         }
 
         [Fact]
-        public async Task ShouldGetExistingProductFromDatabaseWhenDeletingProduct()
+        public async Task ShouldGetExistingProductFromDatabaseWhenDeletingAProduct()
         {
             var code = 3;
             _productRepository
@@ -86,6 +106,30 @@ namespace ProductManagement.Application.Test.Services
             await _sut.DeleteProductByCodeAsync(code, default);
 
             _productRepository.Verify(productRepository => productRepository.GetProductByCodeAsync(code, default));
+        }
+
+        [Fact]
+        public async Task ShouldReturnFailureWhenTryingToDeleteByCodeAndProductDoesNotExist()
+        {
+            _productRepository
+             .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
+             .Returns(null as Product);
+
+            var result = await _sut.DeleteProductByCodeAsync(1, default);
+
+            result.IsSuccess.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessWhenProductIsSuccessfullyDeletedByCode()
+        {
+            _productRepository
+              .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
+              .Returns(ProductDataFaker.GetFakeProduct(_faker));
+
+            var result = await _sut.DeleteProductByCodeAsync(1, default);
+
+            result.IsSuccess.Should().BeTrue();
         }
 
         [Fact]
@@ -160,6 +204,32 @@ namespace ProductManagement.Application.Test.Services
             await _sut.UpdateProductAsync(updateProductDto, default);
 
             _unitOfWork.Verify(unitOfWork => unitOfWork.CommitChangesAsync(default));
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessWhenProductIsSuccessfullyUpdated()
+        {
+            var updateProductDto = ProductDataFaker.GetFakeUpdateProductDto(_faker);
+            _productRepository
+                .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
+                .Returns(ProductDataFaker.GetFakeProduct(_faker));
+
+            var result = await _sut.UpdateProductAsync(updateProductDto, default);
+
+            result.IsSuccess.Should().BeTrue(); 
+        }
+
+        [Fact]
+        public async Task ShouldReturnFailureWhenTryingToUpdateProductAndProductDoesNotExist()
+        {
+            var updateProductDto = ProductDataFaker.GetFakeUpdateProductDto(_faker);
+            _productRepository
+                .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
+                .Returns(null as Product);
+
+            var result = await _sut.UpdateProductAsync(updateProductDto, default);
+
+            result.IsSuccess.Should().BeFalse();
         }
     }
 }

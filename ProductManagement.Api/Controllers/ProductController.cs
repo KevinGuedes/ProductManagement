@@ -1,11 +1,12 @@
-﻿using FluentValidation.AspNetCore;
+﻿using FluentResults;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using ProductManagement.Application.DTOs;
 using ProductManagement.Application.Products.Service;
 using ProductManagement.Application.Validators;
-using ProductManagement.Domain.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System.Threading;
@@ -38,9 +39,15 @@ namespace ProductManagement.Api.Controllers
         [HttpGet("{code:int}")]
         [SwaggerOperation(Summary = "Get a product by its code")]
         [SwaggerResponse(StatusCodes.Status200OK, "Fetched product", typeof(ProductDto))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Product not found", typeof(NotFound<List<IReason>>))]
         public async Task<IActionResult> GetProductByCode(int code, CancellationToken cancellationToken)
         {
-            return Ok(await _productService.GetProductByCodeAsync(code, cancellationToken));
+            var result = await _productService.GetProductByCodeAsync(code, cancellationToken);
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return NotFound(result.Reasons);
         }
 
         [HttpPost]
@@ -49,49 +56,37 @@ namespace ProductManagement.Api.Controllers
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Bad product parameters", typeof(ValidationProblemDetails))]
         public async Task<IActionResult> CreateProduct(CreateProductDto createProductDto, CancellationToken cancellationToken)
         {
-            var validator = new CreateProductDtoValidator();
-            var valdiationResult = await validator.ValidateAsync(createProductDto, cancellationToken);
-
-            if (valdiationResult.IsValid)
-            {
-                var createdProduct = await _productService.CreateProductAsync(createProductDto, cancellationToken);
-                return StatusCode(StatusCodes.Status201Created, createdProduct);
-            }
-            else
-            {
-                valdiationResult.AddToModelState(ModelState);
-                return BadRequest(new ValidationProblemDetails(ModelState));
-            }
+            var createdProduct = await _productService.CreateProductAsync(createProductDto, cancellationToken);
+            return StatusCode(StatusCodes.Status201Created, createdProduct);
         }
 
         [HttpPut]
         [SwaggerOperation(Summary = "Update an existing product")]
         [SwaggerResponse(StatusCodes.Status200OK, "Updated product", typeof(ProductDto))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Bad product parameters", typeof(ValidationProblemDetails))]
-        public async Task<IActionResult> UpdateProduct([FromServices] IProductRepository productRepository, UpdateProductDto updateProductDto, CancellationToken cancellationToken)
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Product not found", typeof(NotFound<List<IReason>>))]
+        public async Task<IActionResult> UpdateProduct(UpdateProductDto updateProductDto, CancellationToken cancellationToken)
         {
-            var validator = new UpdateProductDtoValidator(productRepository);
-            var valdiationResult = await validator.ValidateAsync(updateProductDto, cancellationToken);
+            var result = await _productService.UpdateProductAsync(updateProductDto, cancellationToken);
 
-            if(valdiationResult.IsValid)
-            {
-                var updatedProduct = await _productService.UpdateProductAsync(updateProductDto, cancellationToken);
-                return Ok(updatedProduct);
-            }
-            else
-            {
-                valdiationResult.AddToModelState(ModelState);
-                return BadRequest(new ValidationProblemDetails(ModelState));
-            }
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return NotFound(result.Reasons);
         }
 
         [HttpDelete("{code:int}")]
         [SwaggerOperation(Summary = "Delete a product by its code")]
         [SwaggerResponse(StatusCodes.Status204NoContent)]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Product not found", typeof(NotFound<List<IReason>>))]
         public async Task<IActionResult> DeleteProduct(int code, CancellationToken cancellationToken)
         {
-            await _productService.DeleteProductByCodeAsync(code, cancellationToken);
-            return NoContent();
+            var result = await _productService.DeleteProductByCodeAsync(code, cancellationToken);
+
+            if (result.IsSuccess)
+                return NoContent();
+
+            return NotFound(result.Reasons);
         }
     }
 }

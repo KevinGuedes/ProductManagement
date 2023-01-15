@@ -6,10 +6,8 @@ namespace ProductManagement.Application.Validators
 {
     public class UpdateProductDtoValidator : AbstractValidator<UpdateProductDto>
     {
-        public UpdateProductDtoValidator(IProductRepository productRepository)
+        public UpdateProductDtoValidator()
         {
-            ClassLevelCascadeMode = CascadeMode.Stop;
-
             RuleFor(updateProductDto => updateProductDto.Code)
                 .GreaterThan(0);
 
@@ -20,12 +18,6 @@ namespace ProductManagement.Application.Validators
             RuleFor(updateProductDto => updateProductDto.ManufacturingDate)
                 .Must((updateProductDto, manufacturingDate) => manufacturingDate < updateProductDto.ExpirationDate)
                 .WithMessage("Manufacturing Date must not be equal or higher than the Expiration Date");
-
-            RuleFor(updateProductDto => updateProductDto.Id)
-                .MustAsync(async (id, cancellationToken) => {
-                    var existingProduct = await productRepository.GetByIdAsync(id, cancellationToken);
-                    return existingProduct is not null;
-                }).WithMessage("Product not found");
         }
     }
 }

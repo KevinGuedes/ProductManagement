@@ -8,14 +8,12 @@ namespace ProductManagement.Application.Test.Validators
     public class UpdateProductDtoValidatorTest
     {
         private readonly UpdateProductDtoValidator _sut;
-        private readonly Mock<IProductRepository> _productRepository;
         private readonly Faker _faker;
 
         public UpdateProductDtoValidatorTest()
         {
             _faker= new Faker();
-            _productRepository = new Mock<IProductRepository>();
-            _sut = new UpdateProductDtoValidator(_productRepository.Object);
+            _sut = new UpdateProductDtoValidator();
         }
 
 
@@ -83,46 +81,6 @@ namespace ProductManagement.Application.Test.Validators
             var result = await _sut.TestValidateAsync(invalidUpdateProductDto, default);
 
             result.ShouldHaveValidationErrorFor(updateProductDto => updateProductDto.Description);
-        }
-
-        [Fact]
-        public async Task ShouldNotHaveValidationErrorWhenProductExistsOnDatabase()
-        {
-            var validUpdateProductDto = ProductDataFaker.GetFakeUpdateProductDto(_faker);
-            _productRepository
-                .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
-                .Returns(ProductDataFaker.GetFakeProduct(_faker));
-
-            var result = await _sut.TestValidateAsync(validUpdateProductDto, default);
-
-            result.ShouldNotHaveValidationErrorFor(updateProductDto => updateProductDto.Id);
-        }
-
-        [Fact]
-        public async Task ShouldNHaveValidationErrorWhenProductDoesNotExistOnDatabase()
-        {
-            var validUpdateProductDto = ProductDataFaker.GetFakeUpdateProductDto(_faker);
-            _productRepository
-                .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
-                .Returns(null as Product);
-
-            var result = await _sut.TestValidateAsync(validUpdateProductDto, default);
-
-            result.ShouldHaveValidationErrorFor(updateProductDto => updateProductDto.Id);
-        }
-
-        [Fact]
-        public async Task ShouldNotHaveValidationErrorsForIdWhenProductDoesNotExistOnDatabaseAndThereIsOtherError()
-        {
-            var invalidUpdateProductDto = ProductDataFaker.GetFakeUpdateProductDto(_faker);
-            invalidUpdateProductDto.ManufacturingDate = invalidUpdateProductDto.ExpirationDate;
-            _productRepository
-                .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
-                .Returns(null as Product);
-
-            var result = await _sut.TestValidateAsync(invalidUpdateProductDto, default);
-
-            result.ShouldNotHaveValidationErrorFor(updateProductDto => updateProductDto.Id);
         }
     }
 }

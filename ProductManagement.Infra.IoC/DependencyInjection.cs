@@ -29,7 +29,7 @@ namespace ProductManagement.Infra.IoC
             ValidatorOptions.Global.LanguageManager.Enabled = false;
             services
                 .AddValidatorsFromAssembly(applicationLayerAssembly)
-                .AddFluentValidationClientsideAdapters();
+                .AddFluentValidationAutoValidation();
         }
 
         private static void AddServices(IServiceCollection services)

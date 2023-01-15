@@ -30,9 +30,13 @@ namespace ProductManagement.Application.Products
             return _mapper.Map<IEnumerable<ProductDto>>(products);
         }
 
-        public async Task<ProductDto> GetProductByCodeAsync(int code, CancellationToken cancellationToken)
+        public async Task<Result<ProductDto>> GetProductByCodeAsync(int code, CancellationToken cancellationToken)
         {
             var product = await _productRepository.GetProductByCodeAsync(code, cancellationToken);
+
+            if (product is null) 
+                return Result.Fail(new Error("Product not found").WithMetadata("Product Code", code));
+
             return _mapper.Map<ProductDto>(product);
         }
 
@@ -53,17 +57,26 @@ namespace ProductManagement.Application.Products
             return _mapper.Map<ProductDto>(createdProduct);
         }
 
-        public async Task DeleteProductByCodeAsync(int code, CancellationToken cancellationToken)
+        public async Task<Result> DeleteProductByCodeAsync(int code, CancellationToken cancellationToken)
         {
             var product = await _productRepository.GetProductByCodeAsync(code, cancellationToken);
+
+            if (product is null)
+                return Result.Fail(new Error("Product not found").WithMetadata("Product Code", code));
+
             product.UpdateStatus(ProductStatus.Inactive);
             _productRepository.Update(product);
             await _unitOfWork.CommitChangesAsync(cancellationToken);
+
+            return Result.Ok();
         }
 
-        public async Task<ProductDto> UpdateProductAsync(UpdateProductDto updateProductDto, CancellationToken cancellationToken)
+        public async Task<Result<ProductDto>> UpdateProductAsync(UpdateProductDto updateProductDto, CancellationToken cancellationToken)
         {
             var product = await _productRepository.GetByIdAsync(updateProductDto.Id, cancellationToken);
+
+            if (product is null)
+                return Result.Fail(new Error("Product not found").WithMetadata("Product Id", updateProductDto.Id));
 
             product.Update(
                 updateProductDto.Code,
@@ -76,7 +89,7 @@ namespace ProductManagement.Application.Products
                 updateProductDto.SupplierCnpj);
             _productRepository.Update(product);
             await _unitOfWork.CommitChangesAsync(cancellationToken);
-            return _mapper.Map<ProductDto>(product);
+            return Result.Ok(_mapper.Map<ProductDto>(product));
         }
     }
 }

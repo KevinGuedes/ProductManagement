@@ -10,18 +10,18 @@ namespace ProductManagement.Application.Validators
         {
             ClassLevelCascadeMode = CascadeMode.Stop;
 
-            RuleFor(productDto => productDto.Code)
-                .NotNull();
+            RuleFor(updateProductDto => updateProductDto.Code)
+                .GreaterThan(0);
 
-            RuleFor(productDto => productDto.Description)
+            RuleFor(updateProductDto => updateProductDto.Description)
                 .NotNull()
                 .NotEmpty();
 
-            RuleFor(productDto => productDto.ManufacturingDate)
-                .Must((productDto, manufacturingDate) => manufacturingDate < productDto.ExpirationDate)
+            RuleFor(updateProductDto => updateProductDto.ManufacturingDate)
+                .Must((updateProductDto, manufacturingDate) => manufacturingDate < updateProductDto.ExpirationDate)
                 .WithMessage("Manufacturing Date must not be equal or higher than the Expiration Date");
 
-            RuleFor(product => product.Id)
+            RuleFor(updateProductDto => updateProductDto.Id)
                 .MustAsync(async (id, cancellationToken) => {
                     var existingProduct = await productRepository.GetByIdAsync(id, cancellationToken);
                     return existingProduct is not null;

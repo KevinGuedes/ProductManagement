@@ -7,15 +7,15 @@ namespace ProductManagement.Application.Validators
     {
         public CreateProductDtoValidator()
         {
-            RuleFor(productDto => productDto.Code)
-                .NotNull();
+            RuleFor(createProductDto => createProductDto.Code)
+                .GreaterThan(0);
 
-            RuleFor(productDto => productDto.Description)
+            RuleFor(createProductDto => createProductDto.Description)
                 .NotNull()
                 .NotEmpty();
 
-            RuleFor(productDto => productDto.ManufacturingDate)
-                .Must((productDto, manufacturingDate) => manufacturingDate < productDto.ExpirationDate)
+            RuleFor(createProductDto => createProductDto.ManufacturingDate)
+                .Must((createProductDto, manufacturingDate) => manufacturingDate < createProductDto.ExpirationDate)
                 .WithMessage("Manufacturing Date must not be equal or higher than the Expiration Date");
         }
     }

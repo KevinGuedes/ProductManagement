@@ -13,5 +13,25 @@ namespace ProductManagement.Application.DTOs
         public int SupplierCode { get; set; }
         public string SupplierDescription { get; set; }
         public string SupplierCnpj { get; set; }
+
+        public CreateProductDto(
+            int code, 
+            string description,
+            ProductStatus status, 
+            DateTime manufacturingDate, 
+            DateTime expirationDate, 
+            int supplierCode, 
+            string supplierDescription,
+            string supplierCnpj)
+        {
+            Code = code;
+            Description = description;
+            Status = status;
+            ManufacturingDate = manufacturingDate;
+            ExpirationDate = expirationDate;
+            SupplierCode = supplierCode;
+            SupplierDescription = supplierDescription;
+            SupplierCnpj = supplierCnpj;
+        }
     }
 }

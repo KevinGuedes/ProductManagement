@@ -3,9 +3,8 @@ using System;
 
 namespace ProductManagement.Application.DTOs
 {
-    public class ProductDto
+    public class CreateProductDto
     {
-        public int Id { get; set; }
         public int Code { get; set; }
         public string Description { get; set; }
         public ProductStatus Status { get; set; }

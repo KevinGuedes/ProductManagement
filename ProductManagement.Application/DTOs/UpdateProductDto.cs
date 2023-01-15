@@ -3,7 +3,7 @@ using System;
 
 namespace ProductManagement.Application.DTOs
 {
-    public class ProductDto
+    public class UpdateProductDto
     {
         public int Id { get; set; }
         public int Code { get; set; }

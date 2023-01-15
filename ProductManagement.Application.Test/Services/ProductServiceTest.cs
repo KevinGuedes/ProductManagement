@@ -1,10 +1,12 @@
 using AutoMapper;
 using Bogus.Extensions.Brazil;
+using FluentAssertions.Equivalency;
 using ProductManagement.Application.DTOs;
 using ProductManagement.Application.Products;
 using ProductManagement.Domain.Entities;
 using ProductManagement.Domain.Enums;
 using ProductManagement.Domain.Interfaces;
+using ProductManagement.TestUtils;
 
 namespace ProductManagement.Application.Test.Services
 {
@@ -27,31 +29,115 @@ namespace ProductManagement.Application.Test.Services
         }
 
         [Fact]
-        public async Task ShouldReturnProductDataWhenSearchingByCode()
+        public async Task ShouldCallGetAllFromRepositoryWhenRetrievingAllProducts()
         {
-            _mapper.Setup(mapper => mapper.Map<ProductDto>(It.IsAny<Product>())).Returns(new ProductDto());
-            
-            await _sut.GetProductByCodeAsync(1, default);
+            await _sut.GetAllAsync(default);
 
-            _productRepository.Verify(x => x.GetProductByCodeAsync(1, default));
+            _productRepository.Verify(productRepository => productRepository.GetAllAsync(default));
         }
 
         [Fact]
-        public async Task ShouldUpdateProductDataWhenUpdatingProduct()
+        public async Task ShouldCallGetProductByCodeFromRepositoryWhenRetrievingProductByCode()
         {
-            _mapper
-                .Setup(mapper => mapper.Map<ProductDto>(It.IsAny<Product>()))
-                .Returns(new ProductDto());
-            
+            var code = 1;
+
+            await _sut.GetProductByCodeAsync(code, default);
+
+            _productRepository.Verify(productRepository => productRepository.GetProductByCodeAsync(code, default));
+        }
+
+        [Fact]
+        public async Task ShouldCallAddFromRepositoryWhenCreatingANewProduct()
+        {
+            var createProductDto = ProductDataFaker.GetFakeCreateProductDto(_faker);
+
+            await _sut.CreateProductAsync(createProductDto, default);
+
+            _productRepository.Verify(productRepository => productRepository.AddAsync((It.Is<Product>(p =>
+                p.Code == createProductDto.Code &&
+                p.Description == createProductDto.Description &&
+                p.Status == createProductDto.Status &&
+                p.ManufacturingDate == createProductDto.ManufacturingDate &&
+                p.ExpirationDate == createProductDto.ExpirationDate &&
+                p.SupplierCode == createProductDto.SupplierCode &&
+                p.SupplierDescription == createProductDto.SupplierDescription &&
+                p.SupplierCnpj == createProductDto.SupplierCnpj
+            )), default));
+        }
+
+        [Fact]
+        public async Task ShouldCallCommitChangesFromUnitOfWorkWhenCreatingANewProduct()
+        {
+            var createProductDto = ProductDataFaker.GetFakeCreateProductDto(_faker);
+
+            await _sut.CreateProductAsync(createProductDto, default);
+
+            _unitOfWork.Verify(unitOfWork => unitOfWork.CommitChangesAsync(default));
+        }
+
+        [Fact]
+        public async Task ShouldGetExistingProductFromDatabaseWhenDeletingProduct()
+        {
+            var code = 3;
+            _productRepository
+               .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
+               .Returns(ProductDataFaker.GetFakeProduct(_faker));
+
+            await _sut.DeleteProductByCodeAsync(code, default);
+
+            _productRepository.Verify(productRepository => productRepository.GetProductByCodeAsync(code, default));
+        }
+
+        [Fact]
+        public async Task ShouldCallUpdateFromRepositoryWhenDeletingAProduct()
+        {
+            _productRepository
+                .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
+                .Returns(ProductDataFaker.GetFakeProduct(_faker));
+
+            await _sut.DeleteProductByCodeAsync(3, default);
+
+            _productRepository
+                .Verify(productRepository => productRepository.Update(It.Is<Product>(p => p.Status == ProductStatus.Inactive)));
+        }
+
+        [Fact]
+        public async Task ShouldCallCommitChangesFromUnitOfWorkWhenDeletingAProduct()
+        {
+            _productRepository
+                .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
+                .Returns(ProductDataFaker.GetFakeProduct(_faker));
+
+            await _sut.DeleteProductByCodeAsync(3, default);
+
+            _unitOfWork.Verify(unitOfWork => unitOfWork.CommitChangesAsync(default));
+        }
+
+        [Fact]
+        public async Task ShouldCallGetExistingProductFromRepositoryWhenUpdatingAProduct()
+        {
+            var updateProductDto = ProductDataFaker.GetFakeUpdateProductDto(_faker);
             _productRepository
                 .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
                 .Returns(ProductDataFaker.GetFakeProduct(_faker));
 
+            await _sut.UpdateProductAsync(updateProductDto, default);
+
+            _productRepository
+              .Verify(productRepository => productRepository.GetByIdAsync(It.Is<int>(id => id == updateProductDto.Id), default));
+        }
+
+        [Fact]
+        public async Task ShouldCallUpdateFromRepositoryWithUpdatedDataWhenUpdatingAProduct()
+        {
             var updateProductDto = ProductDataFaker.GetFakeUpdateProductDto(_faker);
+            _productRepository
+                .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
+                .Returns(ProductDataFaker.GetFakeProduct(_faker));
 
             await _sut.UpdateProductAsync(updateProductDto, default);
 
-            _productRepository.Verify(x => x.Update(It.Is<Product>(p => 
+            _productRepository.Verify(productRepository => productRepository.Update(It.Is<Product>(p => 
                 p.Code == updateProductDto.Code &&
                 p.Description == updateProductDto.Description &&
                 p.Status == updateProductDto.Status &&
@@ -61,6 +147,19 @@ namespace ProductManagement.Application.Test.Services
                 p.SupplierDescription == updateProductDto.SupplierDescription &&
                 p.SupplierCnpj == updateProductDto.SupplierCnpj
             )));
+        }
+
+        [Fact]
+        public async Task ShouldCallCommitChangesFromUnitOfWorkWhenUpdatingAProduct()
+        {
+            var updateProductDto = ProductDataFaker.GetFakeUpdateProductDto(_faker);
+            _productRepository
+                .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
+                .Returns(ProductDataFaker.GetFakeProduct(_faker));
+
+            await _sut.UpdateProductAsync(updateProductDto, default);
+
+            _unitOfWork.Verify(unitOfWork => unitOfWork.CommitChangesAsync(default));
         }
     }
 }

@@ -45,7 +45,7 @@ namespace ProductManagement.Application.Products
             var existingProduct = await _productRepository.GetProductByCodeAsync(createProductDto.Code, cancellationToken);
 
             if (existingProduct is not null)
-                return Result.Fail(new Error("There is already a product with that code").WithMetadata("Product Code", createProductDto.Code));
+                return Result.Fail(new Error("A product with this code has already been created").WithMetadata("Product Code", createProductDto.Code));
 
             var createdProduct = new Product(
                 createProductDto.Code,

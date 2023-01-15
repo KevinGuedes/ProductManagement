@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using ProductManagement.Application.DTOs;
-using ProductManagement.Application.Products.Service;
+using ProductManagement.Application.Products;
+using ProductManagement.Application.Validators;
+using ProductManagement.Domain.Interfaces;
+using ProductManagement.Infra.Persistence.Repositories;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System.Threading;
@@ -10,8 +14,10 @@ using System.Threading.Tasks;
 
 namespace ProductManagement.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+    [Produces("application/json")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Backend went rogue", typeof(ProblemDetails))]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -42,20 +48,42 @@ namespace ProductManagement.Api.Controllers
         [SwaggerOperation(Summary = "Create a new product")]
         [SwaggerResponse(StatusCodes.Status201Created, "Created product", typeof(ProductDto))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Bad product parameters", typeof(ValidationProblemDetails))]
-        public async Task<IActionResult> CreateProduct(ProductDto productDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateProduct(CreateProductDto createProductDto, CancellationToken cancellationToken)
         {
-            var createdProduct = await _productService.CreateProductAsync(productDto, cancellationToken);
-            return StatusCode(StatusCodes.Status201Created, createdProduct);
+            var validator = new CreateProductDtoValidator();
+            var valdiationResult = await validator.ValidateAsync(createProductDto, cancellationToken);
+
+            if (valdiationResult.IsValid)
+            {
+                var createdProduct = await _productService.CreateProductAsync(createProductDto, cancellationToken);
+                return StatusCode(StatusCodes.Status201Created, createdProduct);
+            }
+            else
+            {
+                valdiationResult.AddToModelState(ModelState);
+                return BadRequest(new ValidationProblemDetails(ModelState));
+            }
         }
 
         [HttpPut]
         [SwaggerOperation(Summary = "Update an existing product")]
         [SwaggerResponse(StatusCodes.Status200OK, "Updated product", typeof(ProductDto))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Bad product parameters", typeof(ValidationProblemDetails))]
-        public async Task<IActionResult> UpdateProduct(ProductDto productDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateProduct([FromServices] IProductRepository productRepository, UpdateProductDto updateProductDto, CancellationToken cancellationToken)
         {
-            var updatedProduct = await _productService.UpdateProductAsync(productDto, cancellationToken);
-            return Ok(updatedProduct);
+            var validator = new UpdateProductDtoValidator(productRepository);
+            var valdiationResult = await validator.ValidateAsync(updateProductDto, cancellationToken);
+
+            if(valdiationResult.IsValid)
+            {
+                var updatedProduct = await _productService.UpdateProductAsync(updateProductDto, cancellationToken);
+                return Ok(updatedProduct);
+            }
+            else
+            {
+                valdiationResult.AddToModelState(ModelState);
+                return BadRequest(new ValidationProblemDetails(ModelState));
+            }
         }
 
         [HttpDelete("{code:int}")]

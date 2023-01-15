@@ -1,13 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OData.ModelBuilder;
 using MyFinance.Presentation.Configurations;
-using ProductManagement.Application.DTOs;
 using ProductManagement.Infra.IoC;
 
 namespace ProductManagement.Api
@@ -33,11 +30,9 @@ namespace ProductManagement.Api
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
                 app.UseCustomSwaggerConfiguration();
-            }
 
+            app.UseExceptionHandler("/error");
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();

@@ -12,7 +12,7 @@ namespace ProductManagement.Domain.Entities
         public DateTime ExpirationDate { get; private set; }
         public int SupplierCode { get; private set; }
         public string SupplierDescription { get; private set; }
-        public string SupplierCNPJ { get; private set; }
+        public string SupplierCnpj { get; private set; }
 
         public Product(
             int code,
@@ -22,7 +22,7 @@ namespace ProductManagement.Domain.Entities
             DateTime expirationDate,
             int supplierCode,
             string supplierDescription,
-            string supplierCNPJ)
+            string supplierCnpj)
         {
             Code = code;
             Description = description;
@@ -31,7 +31,7 @@ namespace ProductManagement.Domain.Entities
             ExpirationDate = expirationDate;
             SupplierCode = supplierCode;
             SupplierDescription = supplierDescription;
-            SupplierCNPJ = supplierCNPJ;
+            SupplierCnpj = supplierCnpj;
         }
 
         protected Product() { }
@@ -50,7 +50,7 @@ namespace ProductManagement.Domain.Entities
             DateTime expirationDate,
             int supplierCode,
             string supplierDescription,
-            string supplierCNPJ)
+            string supplierCnpj)
         {
             Code = code;
             Description = description;
@@ -59,7 +59,7 @@ namespace ProductManagement.Domain.Entities
             ExpirationDate = expirationDate;
             SupplierCode = supplierCode;
             SupplierDescription = supplierDescription;
-            SupplierCNPJ = supplierCNPJ;
+            SupplierCnpj = supplierCnpj;
             SetUpdateDate();
         }
     }

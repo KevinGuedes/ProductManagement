@@ -6,47 +6,53 @@ using ProductManagement.Domain.Enums;
 
 namespace ProductManagement.TestUtils
 {
-    public static class ProductDataFaker
+    public class ProductDataFaker
     {
+        private readonly Faker _faker;
 
-        public static Product GetFakeProduct(Faker faker)
+        public ProductDataFaker()
+        {
+            _faker = new Faker();
+        }
+
+        public Product GetProduct()
         {
             return new Product(
-                faker.Random.Int(1, 1000),
-                faker.Lorem.Sentences(),
+                _faker.Random.Int(1, 1000),
+                _faker.Lorem.Sentences(),
                 ProductStatus.Active,
                 DateTime.UtcNow.AddDays(-3),
                 DateTime.UtcNow,
-                faker.Random.Int(1, 1000),
-                faker.Lorem.Sentences(),
-                faker.Company.Cnpj());
+                _faker.Random.Int(1, 1000),
+                _faker.Lorem.Sentences(),
+                _faker.Company.Cnpj());
         }
 
-        public static CreateProductDto GetFakeCreateProductDto(Faker faker)
+        public CreateProductDto GetCreateProductDto()
         {
             return new CreateProductDto(
-                faker.Random.Int(1, 1000),
-                faker.Lorem.Sentences(),
+                _faker.Random.Int(1, 1000),
+                _faker.Lorem.Sentences(),
                 ProductStatus.Active,
                 DateTime.UtcNow.AddDays(-3),
                 DateTime.UtcNow,
-                faker.Random.Int(1, 1000),
-                faker.Lorem.Sentences(),
-                faker.Company.Cnpj());
+                _faker.Random.Int(1, 1000),
+                _faker.Lorem.Sentences(),
+                _faker.Company.Cnpj());
         }
 
-        public static UpdateProductDto GetFakeUpdateProductDto(Faker faker)
+        public UpdateProductDto GetUpdateProductDto()
         {
             return new UpdateProductDto(
-                faker.Random.Int(1, 1000),
-                faker.Random.Int(1, 1000),
-                faker.Lorem.Sentences(),
+                _faker.Random.Int(1, 1000),
+                _faker.Random.Int(1, 1000),
+                _faker.Lorem.Sentences(),
                 ProductStatus.Active,
                 DateTime.UtcNow.AddDays(-3),
                 DateTime.UtcNow,
-                faker.Random.Int(1, 1000),
-                faker.Lorem.Sentences(),
-                faker.Company.Cnpj());
+                _faker.Random.Int(1, 1000),
+                _faker.Lorem.Sentences(),
+                _faker.Company.Cnpj());
         }
     }
 }

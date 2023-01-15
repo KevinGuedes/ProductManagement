@@ -12,14 +12,14 @@ namespace ProductManagement.Application.Test.Services
         private readonly Mock<IUnitOfWork> _unitOfWork;
         private readonly Mock<IProductRepository> _productRepository;
         private readonly Mock<IMapper> _mapper;
-        private readonly Faker _faker;
+        private readonly ProductDataFaker _productDataFaker;
 
         public ProductServiceTest()
         {
             _unitOfWork = new Mock<IUnitOfWork>();
             _productRepository = new Mock<IProductRepository>();
             _mapper = new Mock<IMapper>();
-            _faker = new Faker();
+            _productDataFaker = new ProductDataFaker();
 
             _sut = new ProductService(_mapper.Object, _productRepository.Object, _unitOfWork.Object);
         }
@@ -59,7 +59,7 @@ namespace ProductManagement.Application.Test.Services
         {
             _productRepository
               .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
-              .Returns(ProductDataFaker.GetFakeProduct(_faker));
+              .Returns(_productDataFaker.GetProduct());
 
             var result = await _sut.GetProductByCodeAsync(1, default);
 
@@ -69,7 +69,7 @@ namespace ProductManagement.Application.Test.Services
         [Fact]
         public async Task ShouldCallAddFromRepositoryWhenCreatingANewProduct()
         {
-            var createProductDto = ProductDataFaker.GetFakeCreateProductDto(_faker);
+            var createProductDto = _productDataFaker.GetCreateProductDto();
 
             await _sut.CreateProductAsync(createProductDto, default);
 
@@ -88,7 +88,7 @@ namespace ProductManagement.Application.Test.Services
         [Fact]
         public async Task ShouldCallCommitChangesFromUnitOfWorkWhenCreatingANewProduct()
         {
-            var createProductDto = ProductDataFaker.GetFakeCreateProductDto(_faker);
+            var createProductDto = _productDataFaker.GetCreateProductDto();
 
             await _sut.CreateProductAsync(createProductDto, default);
 
@@ -98,7 +98,7 @@ namespace ProductManagement.Application.Test.Services
         [Fact]
         public async Task ShouldReturnSuccessWhenProductIsSuccessfullyCreated()
         {
-            var createProductDto = ProductDataFaker.GetFakeCreateProductDto(_faker);
+            var createProductDto = _productDataFaker.GetCreateProductDto();
             _productRepository
                .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
                .Returns(null as Product);
@@ -111,8 +111,8 @@ namespace ProductManagement.Application.Test.Services
         [Fact]
         public async Task ShouldReturnFailureWhenThereIsAProductWithTheSameCode()
         {
-            var createProductDto = ProductDataFaker.GetFakeCreateProductDto(_faker);
-            var existingProduct = ProductDataFaker.GetFakeProduct(_faker);
+            var createProductDto = _productDataFaker.GetCreateProductDto();
+            var existingProduct = _productDataFaker.GetProduct();
             createProductDto.Code = existingProduct.Code;
 
             _productRepository
@@ -130,7 +130,7 @@ namespace ProductManagement.Application.Test.Services
             var code = 3;
             _productRepository
                .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
-               .Returns(ProductDataFaker.GetFakeProduct(_faker));
+               .Returns(_productDataFaker.GetProduct());
 
             await _sut.DeleteProductByCodeAsync(code, default);
 
@@ -154,7 +154,7 @@ namespace ProductManagement.Application.Test.Services
         {
             _productRepository
               .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
-              .Returns(ProductDataFaker.GetFakeProduct(_faker));
+              .Returns(_productDataFaker.GetProduct());
 
             var result = await _sut.DeleteProductByCodeAsync(1, default);
 
@@ -166,7 +166,7 @@ namespace ProductManagement.Application.Test.Services
         {
             _productRepository
                 .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
-                .Returns(ProductDataFaker.GetFakeProduct(_faker));
+                .Returns(_productDataFaker.GetProduct());
 
             await _sut.DeleteProductByCodeAsync(3, default);
 
@@ -179,7 +179,7 @@ namespace ProductManagement.Application.Test.Services
         {
             _productRepository
                 .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
-                .Returns(ProductDataFaker.GetFakeProduct(_faker));
+                .Returns(_productDataFaker.GetProduct());
 
             await _sut.DeleteProductByCodeAsync(3, default);
 
@@ -189,10 +189,10 @@ namespace ProductManagement.Application.Test.Services
         [Fact]
         public async Task ShouldCallGetExistingProductFromRepositoryWhenUpdatingAProduct()
         {
-            var updateProductDto = ProductDataFaker.GetFakeUpdateProductDto(_faker);
+            var updateProductDto = _productDataFaker.GetUpdateProductDto();
             _productRepository
                 .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
-                .Returns(ProductDataFaker.GetFakeProduct(_faker));
+                .Returns(_productDataFaker.GetProduct());
 
             await _sut.UpdateProductAsync(updateProductDto, default);
 
@@ -203,10 +203,10 @@ namespace ProductManagement.Application.Test.Services
         [Fact]
         public async Task ShouldCallUpdateFromRepositoryWithUpdatedDataWhenUpdatingAProduct()
         {
-            var updateProductDto = ProductDataFaker.GetFakeUpdateProductDto(_faker);
+            var updateProductDto = _productDataFaker.GetUpdateProductDto();
             _productRepository
                 .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
-                .Returns(ProductDataFaker.GetFakeProduct(_faker));
+                .Returns(_productDataFaker.GetProduct());
 
             await _sut.UpdateProductAsync(updateProductDto, default);
 
@@ -225,10 +225,10 @@ namespace ProductManagement.Application.Test.Services
         [Fact]
         public async Task ShouldCallCommitChangesFromUnitOfWorkWhenUpdatingAProduct()
         {
-            var updateProductDto = ProductDataFaker.GetFakeUpdateProductDto(_faker);
+            var updateProductDto = _productDataFaker.GetUpdateProductDto();
             _productRepository
                 .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
-                .Returns(ProductDataFaker.GetFakeProduct(_faker));
+                .Returns(_productDataFaker.GetProduct());
 
             await _sut.UpdateProductAsync(updateProductDto, default);
 
@@ -238,10 +238,10 @@ namespace ProductManagement.Application.Test.Services
         [Fact]
         public async Task ShouldReturnSuccessWhenProductIsSuccessfullyUpdated()
         {
-            var updateProductDto = ProductDataFaker.GetFakeUpdateProductDto(_faker);
+            var updateProductDto = _productDataFaker.GetUpdateProductDto();
             _productRepository
                 .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
-                .Returns(ProductDataFaker.GetFakeProduct(_faker));
+                .Returns(_productDataFaker.GetProduct());
 
             var result = await _sut.UpdateProductAsync(updateProductDto, default);
 
@@ -251,7 +251,7 @@ namespace ProductManagement.Application.Test.Services
         [Fact]
         public async Task ShouldReturnFailureWhenTryingToUpdateProductAndProductDoesNotExist()
         {
-            var updateProductDto = ProductDataFaker.GetFakeUpdateProductDto(_faker);
+            var updateProductDto = _productDataFaker.GetUpdateProductDto();
             _productRepository
                 .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
                 .Returns(null as Product);

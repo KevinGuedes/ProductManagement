@@ -5,18 +5,18 @@ namespace ProductManagement.Application.Test.Validators
     public class CreateProductDtoValidatorTest
     {
         private readonly CreateProductDtoValidator _sut;
-        private readonly Faker _faker;
+        private readonly ProductDataFaker _productDataFaker;
 
         public CreateProductDtoValidatorTest()
         {
-            _faker = new Faker();
+            _productDataFaker = new ProductDataFaker();
             _sut = new CreateProductDtoValidator();
         }
 
         [Fact]
         public async Task ShouldHaveValidationErrorWhenManufacturingDateIsHigherThanExpirationDate()
         {
-            var invalidCreateProductDto = ProductDataFaker.GetFakeCreateProductDto(_faker);
+            var invalidCreateProductDto = _productDataFaker.GetCreateProductDto();
             invalidCreateProductDto.ManufacturingDate = invalidCreateProductDto.ExpirationDate.AddMinutes(1);
 
             var result = await _sut.TestValidateAsync(invalidCreateProductDto, default);
@@ -27,7 +27,7 @@ namespace ProductManagement.Application.Test.Validators
         [Fact]
         public async Task ShouldHaveValidationErrorWhenManufacturingDateIsEqualToExpirationDate()
         {
-            var invalidCreateProductDto = ProductDataFaker.GetFakeCreateProductDto(_faker);
+            var invalidCreateProductDto = _productDataFaker.GetCreateProductDto();
             invalidCreateProductDto.ManufacturingDate = invalidCreateProductDto.ExpirationDate;
 
             var result = await _sut.TestValidateAsync(invalidCreateProductDto, default);
@@ -38,7 +38,7 @@ namespace ProductManagement.Application.Test.Validators
         [Fact]
         public async Task ShouldNotHaveValidationErrorWhenManufacturingDateIsLowerThanExpirationDate()
         {
-            var validCreateProductDto = ProductDataFaker.GetFakeCreateProductDto(_faker);
+            var validCreateProductDto = _productDataFaker.GetCreateProductDto();
             validCreateProductDto.ManufacturingDate = validCreateProductDto.ExpirationDate.AddMinutes(-3);
 
             var result = await _sut.TestValidateAsync(validCreateProductDto, default);
@@ -49,7 +49,7 @@ namespace ProductManagement.Application.Test.Validators
         [Fact]
         public async Task ShouldHaveValidationErrorWhenCodeIsZero()
         {
-            var validCreateProductDto = ProductDataFaker.GetFakeCreateProductDto(_faker);
+            var validCreateProductDto = _productDataFaker.GetCreateProductDto();
             validCreateProductDto.Code = 0;
 
             var result = await _sut.TestValidateAsync(validCreateProductDto, default);
@@ -60,7 +60,7 @@ namespace ProductManagement.Application.Test.Validators
         [Fact]
         public async Task ShouldHaveValidationErrorWhenDescriptionIsNull()
         {
-            var invalidCreateProductDto = ProductDataFaker.GetFakeCreateProductDto(_faker);
+            var invalidCreateProductDto = _productDataFaker.GetCreateProductDto();
             invalidCreateProductDto.Description = null;
 
             var result = await _sut.TestValidateAsync(invalidCreateProductDto, default);
@@ -71,7 +71,7 @@ namespace ProductManagement.Application.Test.Validators
         [Fact]
         public async Task ShouldHaveValidationErrorWhenDescriptionIsEmpty()
         {
-            var invalidCreateProductDto = ProductDataFaker.GetFakeCreateProductDto(_faker);
+            var invalidCreateProductDto = _productDataFaker.GetCreateProductDto();
             invalidCreateProductDto.Description = string.Empty;
 
             var result = await _sut.TestValidateAsync(invalidCreateProductDto, default);

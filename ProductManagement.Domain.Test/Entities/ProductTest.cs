@@ -7,17 +7,19 @@ namespace ProductManagement.Domain.Test.Entities
     public class ProductTest
     {
         private readonly Faker _faker;
+        private readonly ProductDataFaker _productDataFaker;
 
         public ProductTest()
         {
-            _faker = new Faker();
+            _faker = new Faker();   
+           _productDataFaker= new ProductDataFaker();
         }
 
         [Fact]
         public void ShouldSetANewStatusWhenStatusIsUpdated()
         {
             var newStatus = ProductStatus.Inactive;
-            var product = ProductDataFaker.GetFakeProduct(_faker);
+            var product = _productDataFaker.GetProduct();
 
             product.UpdateStatus(newStatus);
 
@@ -28,7 +30,7 @@ namespace ProductManagement.Domain.Test.Entities
         public void UpdateDateShouldNotBeNullWhenStatusIsUpdated()
         {
             var newStatus = ProductStatus.Inactive;
-            var product = ProductDataFaker.GetFakeProduct(_faker);
+            var product = _productDataFaker.GetProduct();
 
             product.UpdateStatus(newStatus);
 
@@ -38,7 +40,7 @@ namespace ProductManagement.Domain.Test.Entities
         [Fact]
         public void UpdateDateShouldNotBeNullWhenProductIsEntirelyUpdated()
         {
-            var product = ProductDataFaker.GetFakeProduct(_faker);
+            var product = _productDataFaker.GetProduct();
 
             product.Update(
                 _faker.Random.Int(0, 1000),

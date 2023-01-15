@@ -26,7 +26,7 @@ namespace ProductManagement.Api.Controllers
         }
 
         [HttpGet]
-        [EnableQuery(PageSize = 10)]
+        [EnableQuery(PageSize = 5)]
         [SwaggerOperation(Summary = "Lists all product according to query parameters")]
         [SwaggerResponse(StatusCodes.Status200OK, "List of all products fetched according to query", typeof(IEnumerable<ProductDto>))]
         public async Task<IActionResult> GetProducts(CancellationToken cancellationToken)

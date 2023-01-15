@@ -110,5 +110,19 @@ namespace ProductManagement.Application.Test.Validators
 
             result.ShouldHaveValidationErrorFor(updateProductDto => updateProductDto.Id);
         }
+
+        [Fact]
+        public async Task ShouldNotHaveValidationErrorsForIdWhenProductDoesNotExistOnDatabaseAndThereIsOtherError()
+        {
+            var invalidUpdateProductDto = ProductDataFaker.GetFakeUpdateProductDto(_faker);
+            invalidUpdateProductDto.ManufacturingDate = invalidUpdateProductDto.ExpirationDate;
+            _productRepository
+                .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
+                .Returns(null as Product);
+
+            var result = await _sut.TestValidateAsync(invalidUpdateProductDto, default);
+
+            result.ShouldNotHaveValidationErrorFor(updateProductDto => updateProductDto.Id);
+        }
     }
 }

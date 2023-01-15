@@ -9,7 +9,7 @@ namespace ProductManagement.Infra.Persistence.Configurations
         public void Configure(EntityTypeBuilder<Product> builder)
         {
             builder.HasKey(product => product.Id);
-            builder.HasIndex(product => product.Code);
+            builder.HasIndex(product => product.Code).IsUnique();
 
             builder.Property(product => product.Id).IsRequired().ValueGeneratedOnAdd();
             builder.Property(product => product.Code).IsRequired();

@@ -54,10 +54,15 @@ namespace ProductManagement.Api.Controllers
         [SwaggerOperation(Summary = "Create a new product")]
         [SwaggerResponse(StatusCodes.Status201Created, "Created product", typeof(ProductDto))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Bad product parameters", typeof(ValidationProblemDetails))]
+        [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "Product can not be created", typeof(UnprocessableEntity<List<IReason>>))]
         public async Task<IActionResult> CreateProduct(CreateProductDto createProductDto, CancellationToken cancellationToken)
         {
-            var createdProduct = await _productService.CreateProductAsync(createProductDto, cancellationToken);
-            return StatusCode(StatusCodes.Status201Created, createdProduct);
+            var result = await _productService.CreateProductAsync(createProductDto, cancellationToken);
+
+            if(result.IsSuccess) 
+                return StatusCode(StatusCodes.Status201Created, result.Value);
+
+            return UnprocessableEntity(result.Reasons);
         }
 
         [HttpPut]

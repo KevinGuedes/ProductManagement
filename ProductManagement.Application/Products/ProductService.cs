@@ -40,8 +40,13 @@ namespace ProductManagement.Application.Products
             return _mapper.Map<ProductDto>(product);
         }
 
-        public async Task<ProductDto> CreateProductAsync(CreateProductDto createProductDto, CancellationToken cancellationToken)
+        public async Task<Result<ProductDto>> CreateProductAsync(CreateProductDto createProductDto, CancellationToken cancellationToken)
         {
+            var existingProduct = await _productRepository.GetProductByCodeAsync(createProductDto.Code, cancellationToken);
+
+            if (existingProduct is not null)
+                return Result.Fail(new Error("There is already a product with that code").WithMetadata("Product Code", createProductDto.Code));
+
             var createdProduct = new Product(
                 createProductDto.Code,
                 createProductDto.Description,
@@ -54,7 +59,7 @@ namespace ProductManagement.Application.Products
 
             await _productRepository.AddAsync(createdProduct, cancellationToken);
             await _unitOfWork.CommitChangesAsync(cancellationToken);
-            return _mapper.Map<ProductDto>(createdProduct);
+            return Result.Ok(_mapper.Map<ProductDto>(createdProduct));
         }
 
         public async Task<Result> DeleteProductByCodeAsync(int code, CancellationToken cancellationToken)

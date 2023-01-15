@@ -3,8 +3,8 @@ using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ProductManagement.Application.Products;
 using ProductManagement.Application.Products.Service;
-using ProductManagement.Application.Validators;
 using ProductManagement.Domain.Interfaces;
 using ProductManagement.Infra.Persistence.Context;
 using ProductManagement.Infra.Persistence.Repositories;
@@ -29,7 +29,7 @@ namespace ProductManagement.Infra.IoC
             ValidatorOptions.Global.LanguageManager.Enabled = false;
             services
                 .AddValidatorsFromAssembly(applicationLayerAssembly)
-                .AddFluentValidationAutoValidation();
+                .AddFluentValidationClientsideAdapters();
         }
 
         private static void AddServices(IServiceCollection services)

@@ -5,6 +5,7 @@ using ProductManagement.Application.Products.Service;
 using ProductManagement.Domain.Entities;
 using ProductManagement.Domain.Enums;
 using ProductManagement.Domain.Interfaces;
+using ProductManagement.Domain.ValueObjects;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,15 +48,14 @@ namespace ProductManagement.Application.Products
             if (existingProduct is not null)
                 return Result.Fail(new Error("A product with this code has already been created").WithMetadata("Product Code", createProductDto.Code));
 
+            var supplierData = new SupplierData(createProductDto.SupplierCode, createProductDto.SupplierDescription, createProductDto.SupplierCnpj);
             var createdProduct = new Product(
                 createProductDto.Code,
                 createProductDto.Description,
                 createProductDto.Status,
                 createProductDto.ManufacturingDate,
                 createProductDto.ExpirationDate,
-                createProductDto.SupplierCode,
-                createProductDto.SupplierDescription,
-                createProductDto.SupplierCnpj);
+                supplierData);
 
             await _productRepository.AddAsync(createdProduct, cancellationToken);
             await _unitOfWork.CommitChangesAsync(cancellationToken);
@@ -83,15 +83,14 @@ namespace ProductManagement.Application.Products
             if (product is null)
                 return Result.Fail(new Error("Product not found").WithMetadata("Product Id", updateProductDto.Id));
 
+            var supplierData = new SupplierData(updateProductDto.SupplierCode, updateProductDto.SupplierDescription, updateProductDto.SupplierCnpj);
             product.Update(
                 updateProductDto.Code,
                 updateProductDto.Description,
                 updateProductDto.Status,
                 updateProductDto.ManufacturingDate,
                 updateProductDto.ExpirationDate,
-                updateProductDto.SupplierCode,
-                updateProductDto.SupplierDescription,
-                updateProductDto.SupplierCnpj);
+                supplierData);
             _productRepository.Update(product);
             await _unitOfWork.CommitChangesAsync(cancellationToken);
             return Result.Ok(_mapper.Map<ProductDto>(product));

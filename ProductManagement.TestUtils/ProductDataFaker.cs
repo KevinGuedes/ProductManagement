@@ -3,6 +3,7 @@ using Bogus.Extensions.Brazil;
 using ProductManagement.Application.DTOs;
 using ProductManagement.Domain.Entities;
 using ProductManagement.Domain.Enums;
+using ProductManagement.Domain.ValueObjects;
 
 namespace ProductManagement.TestUtils
 {
@@ -23,9 +24,7 @@ namespace ProductManagement.TestUtils
                 ProductStatus.Active,
                 DateTime.UtcNow.AddDays(-3),
                 DateTime.UtcNow,
-                _faker.Random.Int(1, 1000),
-                _faker.Lorem.Sentences(),
-                _faker.Company.Cnpj());
+                new SupplierData(_faker.Random.Int(1, 1000), _faker.Lorem.Sentences(), _faker.Company.Cnpj()));
         }
 
         public CreateProductDto GetCreateProductDto()

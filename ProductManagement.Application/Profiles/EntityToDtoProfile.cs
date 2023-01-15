@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ProductManagement.Application.DTOs;
 using ProductManagement.Domain.Entities;
+using ProductManagement.Domain.ValueObjects;
 
 namespace ProductManagement.Application.Profiles
 {
@@ -9,6 +10,7 @@ namespace ProductManagement.Application.Profiles
         public EntityToDtoProfile()
         {
             CreateMap<Product, ProductDto>();
+            CreateMap<SupplierData, SupplierDataDto>();
         }
     }
 }

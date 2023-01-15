@@ -79,9 +79,9 @@ namespace ProductManagement.Application.Test.Services
                 p.Status == createProductDto.Status &&
                 p.ManufacturingDate == createProductDto.ManufacturingDate &&
                 p.ExpirationDate == createProductDto.ExpirationDate &&
-                p.SupplierCode == createProductDto.SupplierCode &&
-                p.SupplierDescription == createProductDto.SupplierDescription &&
-                p.SupplierCnpj == createProductDto.SupplierCnpj
+                p.SupplierData.SupplierCode == createProductDto.SupplierCode &&
+                p.SupplierData.SupplierDescription == createProductDto.SupplierDescription &&
+                p.SupplierData.SupplierCnpj == createProductDto.SupplierCnpj
             )), default));
         }
 
@@ -216,9 +216,9 @@ namespace ProductManagement.Application.Test.Services
                 p.Status == updateProductDto.Status &&
                 p.ManufacturingDate == updateProductDto.ManufacturingDate &&
                 p.ExpirationDate == updateProductDto.ExpirationDate &&
-                p.SupplierCode == updateProductDto.SupplierCode &&
-                p.SupplierDescription == updateProductDto.SupplierDescription &&
-                p.SupplierCnpj == updateProductDto.SupplierCnpj
+                p.SupplierData.SupplierCode == updateProductDto.SupplierCode &&
+                p.SupplierData.SupplierDescription == updateProductDto.SupplierDescription &&
+                p.SupplierData.SupplierCnpj == updateProductDto.SupplierCnpj
             )));
         }
 

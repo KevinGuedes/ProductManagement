@@ -1,37 +1,32 @@
 ﻿using ProductManagement.Domain.Enums;
+using ProductManagement.Domain.ValueObjects;
 using System;
 
 namespace ProductManagement.Domain.Entities
 {
-    public class Product : Entity
+    public class Product : AggregateRoot
     {
         public int Code { get; private set; }
         public string Description { get; private set; }
         public ProductStatus Status { get; private set; }
         public DateTime ManufacturingDate { get; private set; }
         public DateTime ExpirationDate { get; private set; }
-        public int SupplierCode { get; private set; }
-        public string SupplierDescription { get; private set; }
-        public string SupplierCnpj { get; private set; }
+        public SupplierData SupplierData { get; private set; }
 
         public Product(
-            int code,
-            string description,
-            ProductStatus status,
+            int code, 
+            string description, 
+            ProductStatus status, 
             DateTime manufacturingDate,
-            DateTime expirationDate,
-            int supplierCode,
-            string supplierDescription,
-            string supplierCnpj)
+            DateTime expirationDate, 
+            SupplierData supplierData)
         {
             Code = code;
             Description = description;
             Status = status;
             ManufacturingDate = manufacturingDate;
             ExpirationDate = expirationDate;
-            SupplierCode = supplierCode;
-            SupplierDescription = supplierDescription;
-            SupplierCnpj = supplierCnpj;
+            SupplierData = supplierData;
         }
 
         protected Product() { }
@@ -43,23 +38,19 @@ namespace ProductManagement.Domain.Entities
         }
 
         public void Update(
-             int code,
+            int code,
             string description,
             ProductStatus status,
             DateTime manufacturingDate,
             DateTime expirationDate,
-            int supplierCode,
-            string supplierDescription,
-            string supplierCnpj)
+            SupplierData supplierData)
         {
             Code = code;
             Description = description;
             Status = status;
             ManufacturingDate = manufacturingDate;
             ExpirationDate = expirationDate;
-            SupplierCode = supplierCode;
-            SupplierDescription = supplierDescription;
-            SupplierCnpj = supplierCnpj;
+            SupplierData = supplierData;
             SetUpdateDate();
         }
     }

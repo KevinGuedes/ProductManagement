@@ -1,5 +1,6 @@
 using Bogus.Extensions.Brazil;
 using ProductManagement.Domain.Enums;
+using ProductManagement.Domain.ValueObjects;
 using ProductManagement.TestUtils;
 
 namespace ProductManagement.Domain.Test.Entities
@@ -11,8 +12,8 @@ namespace ProductManagement.Domain.Test.Entities
 
         public ProductTest()
         {
-            _faker = new Faker();   
-           _productDataFaker= new ProductDataFaker();
+            _faker = new Faker();
+            _productDataFaker = new ProductDataFaker();
         }
 
         [Fact]
@@ -42,15 +43,14 @@ namespace ProductManagement.Domain.Test.Entities
         {
             var product = _productDataFaker.GetProduct();
 
+            var supplierData = new SupplierData(_faker.Random.Int(0, 1000), _faker.Lorem.Sentences(), _faker.Company.Cnpj());
             product.Update(
                 _faker.Random.Int(0, 1000),
                 _faker.Lorem.Sentences(),
                 ProductStatus.Active,
                 DateTime.UtcNow.AddDays(-3),
                 DateTime.UtcNow,
-                _faker.Random.Int(0, 1000),
-                _faker.Lorem.Sentences(),
-                _faker.Company.Cnpj());
+                supplierData);
 
             product.UpdateDate.Should().NotBeNull();
         }

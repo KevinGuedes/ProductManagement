@@ -14,6 +14,7 @@ namespace ProductManagement.Infra.Persistence.Configurations
             builder.Property(product => product.Id).IsRequired().ValueGeneratedOnAdd();
             builder.Property(product => product.Code).IsRequired();
             builder.Property(product => product.Description).IsRequired();
+            builder.OwnsOne(product => product.SupplierData);
         }
     }
 }

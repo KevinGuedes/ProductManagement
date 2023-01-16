@@ -24,7 +24,7 @@ namespace ProductManagement.Infra.Persistence.Repositories
             return await _productManagementContext.Products.ToListAsync(cancellationToken);
         }
 
-        public async Task<Product> GetProductByCodeAsync(int code, CancellationToken cancellationToken)
+        public async Task<Product> GetByCodeAsync(int code, CancellationToken cancellationToken)
         {
             var product = await _productManagementContext
                 .Products

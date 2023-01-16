@@ -33,7 +33,7 @@ namespace ProductManagement.Application.Products
 
         public async Task<Result<ProductDto>> GetProductByCodeAsync(int code, CancellationToken cancellationToken)
         {
-            var product = await _productRepository.GetProductByCodeAsync(code, cancellationToken);
+            var product = await _productRepository.GetByCodeAsync(code, cancellationToken);
 
             if (product is null)
                 return Result.Fail(new Error("Product not found").WithMetadata("Product Code", code));
@@ -43,7 +43,7 @@ namespace ProductManagement.Application.Products
 
         public async Task<Result<ProductDto>> CreateProductAsync(CreateProductDto createProductDto, CancellationToken cancellationToken)
         {
-            var existingProduct = await _productRepository.GetProductByCodeAsync(createProductDto.Code, cancellationToken);
+            var existingProduct = await _productRepository.GetByCodeAsync(createProductDto.Code, cancellationToken);
 
             if (existingProduct is not null)
                 return Result.Fail(new Error("A product with this code has already been created").WithMetadata("Product Code", createProductDto.Code));
@@ -64,7 +64,7 @@ namespace ProductManagement.Application.Products
 
         public async Task<Result> DeleteProductByCodeAsync(int code, CancellationToken cancellationToken)
         {
-            var product = await _productRepository.GetProductByCodeAsync(code, cancellationToken);
+            var product = await _productRepository.GetByCodeAsync(code, cancellationToken);
 
             if (product is null)
                 return Result.Fail(new Error("Product not found").WithMetadata("Product Code", code));
@@ -79,9 +79,12 @@ namespace ProductManagement.Application.Products
         public async Task<Result<ProductDto>> UpdateProductAsync(UpdateProductDto updateProductDto, CancellationToken cancellationToken)
         {
             var product = await _productRepository.GetByIdAsync(updateProductDto.Id, cancellationToken);
-
             if (product is null)
                 return Result.Fail(new Error("Product not found").WithMetadata("Product Id", updateProductDto.Id));
+
+            var productWitTheSameCode = await _productRepository.GetByCodeAsync(updateProductDto.Code, cancellationToken);
+            if(productWitTheSameCode is not null)
+                return Result.Fail(new Error("A product with this code has already been created").WithMetadata("Product Code", updateProductDto.Code));
 
             var supplierData = new SupplierData(updateProductDto.SupplierCode, updateProductDto.SupplierDescription, updateProductDto.SupplierCnpj);
             product.Update(

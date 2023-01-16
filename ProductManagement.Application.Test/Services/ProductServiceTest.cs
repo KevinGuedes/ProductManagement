@@ -39,14 +39,14 @@ namespace ProductManagement.Application.Test.Services
 
             await _sut.GetProductByCodeAsync(code, default);
 
-            _productRepository.Verify(productRepository => productRepository.GetProductByCodeAsync(code, default));
+            _productRepository.Verify(productRepository => productRepository.GetByCodeAsync(code, default));
         }
 
         [Fact]
         public async Task ShouldReturnFailureWhenTryingToGetByCodeAndProductDoesNotExist()
         {
             _productRepository
-             .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
+             .Setup(repository => repository.GetByCodeAsync(It.IsAny<int>(), default).Result)
              .Returns(null as Product);
 
             var result = await _sut.GetProductByCodeAsync(1, default);
@@ -58,7 +58,7 @@ namespace ProductManagement.Application.Test.Services
         public async Task ShouldReturnSuccessWhenProductIsSuccessfullyRetrievedByCode()
         {
             _productRepository
-              .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
+              .Setup(repository => repository.GetByCodeAsync(It.IsAny<int>(), default).Result)
               .Returns(_productDataFaker.GetProduct());
 
             var result = await _sut.GetProductByCodeAsync(1, default);
@@ -100,7 +100,7 @@ namespace ProductManagement.Application.Test.Services
         {
             var createProductDto = _productDataFaker.GetCreateProductDto();
             _productRepository
-               .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
+               .Setup(repository => repository.GetByCodeAsync(It.IsAny<int>(), default).Result)
                .Returns(null as Product);
 
             var result = await _sut.CreateProductAsync(createProductDto, default);
@@ -116,7 +116,7 @@ namespace ProductManagement.Application.Test.Services
             createProductDto.Code = existingProduct.Code;
 
             _productRepository
-               .Setup(repository => repository.GetProductByCodeAsync(createProductDto.Code, default).Result)
+               .Setup(repository => repository.GetByCodeAsync(createProductDto.Code, default).Result)
                .Returns(existingProduct);
 
             var result = await _sut.CreateProductAsync(createProductDto, default);
@@ -129,19 +129,19 @@ namespace ProductManagement.Application.Test.Services
         {
             var code = 3;
             _productRepository
-               .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
+               .Setup(repository => repository.GetByCodeAsync(It.IsAny<int>(), default).Result)
                .Returns(_productDataFaker.GetProduct());
 
             await _sut.DeleteProductByCodeAsync(code, default);
 
-            _productRepository.Verify(productRepository => productRepository.GetProductByCodeAsync(code, default));
+            _productRepository.Verify(productRepository => productRepository.GetByCodeAsync(code, default));
         }
 
         [Fact]
         public async Task ShouldReturnFailureWhenTryingToDeleteByCodeAndProductDoesNotExist()
         {
             _productRepository
-             .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
+             .Setup(repository => repository.GetByCodeAsync(It.IsAny<int>(), default).Result)
              .Returns(null as Product);
 
             var result = await _sut.DeleteProductByCodeAsync(1, default);
@@ -153,7 +153,7 @@ namespace ProductManagement.Application.Test.Services
         public async Task ShouldReturnSuccessWhenProductIsSuccessfullyDeletedByCode()
         {
             _productRepository
-              .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
+              .Setup(repository => repository.GetByCodeAsync(It.IsAny<int>(), default).Result)
               .Returns(_productDataFaker.GetProduct());
 
             var result = await _sut.DeleteProductByCodeAsync(1, default);
@@ -165,7 +165,7 @@ namespace ProductManagement.Application.Test.Services
         public async Task ShouldCallUpdateFromRepositoryWhenDeletingAProduct()
         {
             _productRepository
-                .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
+                .Setup(repository => repository.GetByCodeAsync(It.IsAny<int>(), default).Result)
                 .Returns(_productDataFaker.GetProduct());
 
             await _sut.DeleteProductByCodeAsync(3, default);
@@ -178,7 +178,7 @@ namespace ProductManagement.Application.Test.Services
         public async Task ShouldCallCommitChangesFromUnitOfWorkWhenDeletingAProduct()
         {
             _productRepository
-                .Setup(repository => repository.GetProductByCodeAsync(It.IsAny<int>(), default).Result)
+                .Setup(repository => repository.GetByCodeAsync(It.IsAny<int>(), default).Result)
                 .Returns(_productDataFaker.GetProduct());
 
             await _sut.DeleteProductByCodeAsync(3, default);
@@ -240,6 +240,9 @@ namespace ProductManagement.Application.Test.Services
         {
             var updateProductDto = _productDataFaker.GetUpdateProductDto();
             _productRepository
+                 .Setup(repository => repository.GetByCodeAsync(It.IsAny<int>(), default).Result)
+                 .Returns(null as Product);
+            _productRepository
                 .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
                 .Returns(_productDataFaker.GetProduct());
 
@@ -255,6 +258,21 @@ namespace ProductManagement.Application.Test.Services
             _productRepository
                 .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
                 .Returns(null as Product);
+
+            var result = await _sut.UpdateProductAsync(updateProductDto, default);
+
+            result.IsSuccess.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task ShouldReturnFailureWhenUpdatingAProductWithTheSameCodeOfAExistingProduct()
+        {
+            var product = _productDataFaker.GetProduct();
+            var updateProductDto = _productDataFaker.GetUpdateProductDto();
+
+            _productRepository
+                .Setup(repository => repository.GetByCodeAsync(It.IsAny<int>(), default).Result)
+                .Returns(product);
 
             var result = await _sut.UpdateProductAsync(updateProductDto, default);
 

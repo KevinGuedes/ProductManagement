@@ -6,6 +6,6 @@ namespace ProductManagement.Domain.Interfaces
 {
     public interface IProductRepository : IRepository<Product>
     {
-        Task<Product> GetProductByCodeAsync(int code, CancellationToken cancellationToken);
+        Task<Product> GetByCodeAsync(int code, CancellationToken cancellationToken);
     }
 }

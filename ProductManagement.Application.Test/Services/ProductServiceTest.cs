@@ -193,11 +193,14 @@ namespace ProductManagement.Application.Test.Services
             _productRepository
                 .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
                 .Returns(_productDataFaker.GetProduct());
+            _productRepository
+                 .Setup(repository => repository.GetByCodeAsync(It.IsAny<int>(), default).Result)
+                 .Returns(null as Product);
 
             await _sut.UpdateProductAsync(updateProductDto, default);
 
             _productRepository
-              .Verify(productRepository => productRepository.GetByIdAsync(It.Is<int>(id => id == updateProductDto.Id), default));
+                .Verify(productRepository => productRepository.GetByIdAsync(It.Is<int>(id => id == updateProductDto.Id), default));
         }
 
         [Fact]
@@ -207,6 +210,9 @@ namespace ProductManagement.Application.Test.Services
             _productRepository
                 .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
                 .Returns(_productDataFaker.GetProduct());
+            _productRepository
+                 .Setup(repository => repository.GetByCodeAsync(It.IsAny<int>(), default).Result)
+                 .Returns(null as Product);
 
             await _sut.UpdateProductAsync(updateProductDto, default);
 
@@ -229,6 +235,9 @@ namespace ProductManagement.Application.Test.Services
             _productRepository
                 .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
                 .Returns(_productDataFaker.GetProduct());
+            _productRepository
+                .Setup(repository => repository.GetByCodeAsync(It.IsAny<int>(), default).Result)
+                .Returns(null as Product);
 
             await _sut.UpdateProductAsync(updateProductDto, default);
 
@@ -252,7 +261,7 @@ namespace ProductManagement.Application.Test.Services
         }
 
         [Fact]
-        public async Task ShouldReturnFailureWhenTryingToUpdateProductAndProductDoesNotExist()
+        public async Task ShouldReturnFailureWhenTryingToUpdateProductAndProductThatDoesNotExist()
         {
             var updateProductDto = _productDataFaker.GetUpdateProductDto();
             _productRepository
@@ -265,18 +274,64 @@ namespace ProductManagement.Application.Test.Services
         }
 
         [Fact]
-        public async Task ShouldReturnFailureWhenUpdatingAProductWithTheSameCodeOfAExistingProduct()
+        public async Task ShouldReturnSuccessWhenAProductWithTheSameCodeHasTheSameId()
+        {
+            var productWithTheSameId = _productDataFaker.GetProduct();
+            var productWithTheSameCode = _productDataFaker.GetProduct();
+            var updateProductDto = _productDataFaker.GetUpdateProductDto();
+            updateProductDto.Id = productWithTheSameCode.Id;
+
+            _productRepository
+                .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
+                .Returns(productWithTheSameId);
+
+            _productRepository
+                .Setup(repository => repository.GetByCodeAsync(It.IsAny<int>(), default).Result)
+                .Returns(productWithTheSameCode);
+
+            var result = await _sut.UpdateProductAsync(updateProductDto, default);
+
+            result.IsSuccess.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ShouldReturnFailureWhenAProductWithTheSameCodeHasADifferentId()
+        {
+            var productWithTheSameId = _productDataFaker.GetProduct();
+            var productWithTheSameCode = _productDataFaker.GetProduct();
+            var updateProductDto = _productDataFaker.GetUpdateProductDto();
+            updateProductDto.Id = productWithTheSameCode.Id + 1;
+
+            _productRepository
+                .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
+                .Returns(productWithTheSameId);
+
+            _productRepository
+                .Setup(repository => repository.GetByCodeAsync(It.IsAny<int>(), default).Result)
+                .Returns(productWithTheSameCode);
+
+            var result = await _sut.UpdateProductAsync(updateProductDto, default);
+
+            result.IsSuccess.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task ShouldReturnSuccessWhenThereIsNoProductWithTheSameCode()
         {
             var product = _productDataFaker.GetProduct();
             var updateProductDto = _productDataFaker.GetUpdateProductDto();
 
             _productRepository
-                .Setup(repository => repository.GetByCodeAsync(It.IsAny<int>(), default).Result)
+                .Setup(repository => repository.GetByIdAsync(It.IsAny<int>(), default).Result)
                 .Returns(product);
+
+            _productRepository
+                .Setup(repository => repository.GetByCodeAsync(It.IsAny<int>(), default).Result)
+                .Returns(null as Product);
 
             var result = await _sut.UpdateProductAsync(updateProductDto, default);
 
-            result.IsSuccess.Should().BeFalse();
+            result.IsSuccess.Should().BeTrue();
         }
     }
 }

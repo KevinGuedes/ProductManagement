@@ -83,7 +83,8 @@ namespace ProductManagement.Application.Products
                 return Result.Fail(new Error("Product not found").WithMetadata("Product Id", updateProductDto.Id));
 
             var productWitTheSameCode = await _productRepository.GetByCodeAsync(updateProductDto.Code, cancellationToken);
-            if(productWitTheSameCode is not null)
+            var isRepeatedCode = productWitTheSameCode is not null && productWitTheSameCode.Id != updateProductDto.Id;
+            if (isRepeatedCode)
                 return Result.Fail(new Error("A product with this code has already been created").WithMetadata("Product Code", updateProductDto.Code));
 
             var supplierData = new SupplierData(updateProductDto.SupplierCode, updateProductDto.SupplierDescription, updateProductDto.SupplierCnpj);
